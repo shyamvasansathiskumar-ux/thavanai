@@ -136,20 +136,27 @@ p { margin: 0; }
 .scene3d { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 4; pointer-events: none; }
 .three-on .clay[data-obj] { opacity: 0; }
 
-/* the pointer: a dot, and a ring that trails it, grows over things you can use and wraps buttons */
-.cur { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; mix-blend-mode: difference; }
-.cur-dot, .cur-ring { position: fixed; left: 0; top: 0; pointer-events: none; will-change: transform; }
-.cur-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #fff; transition: opacity 0.2s, transform 0.08s linear; }
-.cur-ring { border: 1.5px solid #fff; border-radius: 999px; display: grid; place-items: center; transition: opacity 0.25s, border-width 0.2s; }
-.cur-label { font: 600 10.5px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: #fff; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+/* the pointer: a registration mark. A fine crosshair at the tip; four crop-mark corners that trail it and close around things you can use */
+.cur { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; mix-blend-mode: difference; color: #fff; }
+.cur-cross, .cur-box { position: fixed; left: 0; top: 0; pointer-events: none; will-change: transform; transition: opacity 0.2s; }
+.cur-cross { width: 0; height: 0; }
+.cur-cross::before, .cur-cross::after { content: ""; position: absolute; background: currentColor; }
+.cur-cross::before { left: -9px; top: -0.5px; width: 18px; height: 1px; }
+.cur-cross::after { top: -9px; left: -0.5px; height: 18px; width: 1px; }
+.cur-box { width: 26px; height: 26px; }
+.cur-c { position: absolute; width: 7px; height: 7px; border-color: currentColor; transition: width 0.25s, height 0.25s; }
+.cur-c.tl { left: 0; top: 0; border-top: 1.5px solid; border-left: 1.5px solid; }
+.cur-c.tr { right: 0; top: 0; border-top: 1.5px solid; border-right: 1.5px solid; }
+.cur-c.bl { left: 0; bottom: 0; border-bottom: 1.5px solid; border-left: 1.5px solid; }
+.cur-c.br { right: 0; bottom: 0; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+.cur.is-on .cur-c { width: 10px; height: 10px; }
+.cur.is-down .cur-c { width: 4px; height: 4px; }
+.cur-label { position: absolute; right: 0; top: calc(100% + 6px); font: 400 10.5px/1 var(--pixel); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
 .cur.has-label .cur-label { opacity: 1; }
-.cur.has-label .cur-dot { opacity: 0; }
-.cur.is-btn .cur-dot { opacity: 0; }
-.cur.is-down .cur-ring { border-width: 3px; }
-.cur.is-hidden .cur-dot, .cur.is-hidden .cur-ring { opacity: 0; }
+.cur.is-hidden .cur-cross, .cur.is-hidden .cur-box, .cur.is-typing .cur-cross, .cur.is-typing .cur-box { opacity: 0; }
+/* the demo keeps the system pointer: corners appear only on things you can use */
+.cur.is-quiet .cur-cross { display: none; }
+.cur.is-quiet:not(.is-on) .cur-box { opacity: 0; }
 html.has-cur, html.has-cur a, html.has-cur button, html.has-cur label, html.has-cur summary, html.has-cur [role="button"], html.has-cur .lock-gl, html.has-cur .er-t { cursor: none; }
-html.has-cur-ring .cur-dot { display: none; }
 @media (hover: none), (pointer: coarse) { .cur { display: none; } }
-.cur.is-sq .cur-ring { background: #fff; border-color: #fff; }
-.cur.is-sq .cur-dot { opacity: 0; }
 .ld-retry { grid-column: 1 / -1; justify-self: start; margin-top: 10px; padding: 10px 16px; border: 1px dashed #9cd3af; color: #f3f3ee; font: 500 13px var(--mono); text-decoration: none; }

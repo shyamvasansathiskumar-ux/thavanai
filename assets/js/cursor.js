@@ -1,22 +1,24 @@
-/* The pointer. A dot follows the mouse exactly; a ring trails behind it, grows and names things you can use
-   ("Open", "Drag", "View"), and wraps itself around buttons. Text fields keep the normal I-beam.
-   <body data-cursor="ring"> keeps the system pointer and adds only the ring (the demo, where precision matters). */
+/* The pointer, drawn as a printer's registration mark: a fine crosshair at the tip, and four crop-mark corners
+   that trail it and close around whatever you can use (a button, a link, the padlock), naming it when useful.
+   No light, no glow. Text fields keep the normal I-beam.
+   <body data-cursor="ring"> (the demo and tests pages) keeps the system pointer and shows only the corners on things you can use. */
 (function () {
   "use strict";
   if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const root = document.documentElement;
-  const ringOnly = document.body.dataset.cursor === "ring";
-  const wrap = document.createElement("div"); wrap.className = "cur is-hidden"; wrap.setAttribute("aria-hidden", "true");
-  const dot = document.createElement("div"); dot.className = "cur-dot";
-  const ring = document.createElement("div"); ring.className = "cur-ring";
-  const label = document.createElement("span"); label.className = "cur-label"; ring.append(label);
-  wrap.append(ring, dot);
+  const quiet = document.body.dataset.cursor === "ring";
+  const make = (cls, parent) => { const e = document.createElement(cls === "cur-label" ? "span" : "div"); e.className = cls; (parent || wrap).append(e); return e; };
+  const wrap = document.createElement("div"); wrap.className = "cur is-hidden" + (quiet ? " is-quiet" : ""); wrap.setAttribute("aria-hidden", "true");
   document.body.append(wrap);
-  root.classList.add(ringOnly ? "has-cur-ring" : "has-cur");
+  const cross = make("cur-cross");
+  const box = make("cur-box");
+  ["tl", "tr", "bl", "br"].forEach((c) => make("cur-c " + c, box));
+  const label = make("cur-label", box);
+  root.classList.add(quiet ? "has-cur-ring" : "has-cur");
 
   const TEXT = "input, textarea, select, [contenteditable=''], [contenteditable='true']";
-  const HOT = "a[href], button, label, summary, [role='button'], .lock-gl, .er-t, .shot, .marquee";
+  const HOT = "a[href], button, label, summary, [role='button'], .lock-gl, .er-t, .shot, .marquee, .tile, .act, .choice, tr.pick";
   const nameOf = (el) => {
     if (el.dataset.cursor) return el.dataset.cursor;
     if (el.classList.contains("lock-gl")) return "Drag";
@@ -28,35 +30,29 @@
     return "";
   };
 
-  let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y, rw = 34, rh = 34, rr = 17;
-  let tw = 34, th = 34, tr = 17, tx = x, ty = y, target = null, seen = false;
+  let x = innerWidth / 2, y = innerHeight / 2, seen = false, target = null;
+  // the corner box: current and target centre and size
+  let bx = x, by = y, bw = 26, bh = 26, tx = x, ty = y, tw = 26, th = 26;
   let last = performance.now();
 
-  addEventListener("pointermove", (e) => {
-    x = e.clientX; y = e.clientY;
-    if (!seen) { seen = true; rx = x; ry = y; wrap.classList.remove("is-hidden"); }
-    sense(e.target);
-  }, { passive: true });
-  // when the page scrolls under a still mouse, look again at what is under it
-  let sq = false;
-  addEventListener("scroll", () => { if (!seen || sq) return; sq = true; requestAnimationFrame(() => { sq = false; sense(document.elementFromPoint(x, y)); }); }, { passive: true });
   function sense(node) {
     const el = node && node.closest ? node : null;
     const typing = el && el.closest(TEXT);
-    wrap.classList.toggle("is-hidden", !!typing);
-    const hot = el && el.closest(HOT);
-    target = hot && hot.classList.contains("btn") ? hot : null;
-    const name = hot && !target ? nameOf(hot) : "";
+    wrap.classList.toggle("is-typing", !!typing);
+    const hot = typing ? null : el && el.closest(HOT);
+    target = hot || null;
+    const name = hot ? nameOf(hot) : "";
     label.textContent = name;
     wrap.classList.toggle("has-label", !!name);
-    wrap.classList.toggle("is-btn", !!target);
-    if (target) return;
-    const plainLink = hot && !name && hot.matches("a[href]") && !hot.closest(".hud");
-    wrap.classList.toggle("is-sq", !!plainLink);
-    if (plainLink) { tw = th = 12; tr = 0; return; }
-    const size = name ? 72 : hot ? 52 : 34;
-    tw = th = size; tr = size / 2;
+    wrap.classList.toggle("is-on", !!hot);
   }
+  addEventListener("pointermove", (e) => {
+    x = e.clientX; y = e.clientY;
+    if (!seen) { seen = true; bx = x; by = y; wrap.classList.remove("is-hidden"); }
+    sense(e.target);
+  }, { passive: true });
+  let sq = false;
+  addEventListener("scroll", () => { if (!seen || sq) return; sq = true; requestAnimationFrame(() => { sq = false; sense(document.elementFromPoint(x, y)); }); }, { passive: true });
   addEventListener("pointerdown", () => wrap.classList.add("is-down"), { passive: true });
   addEventListener("pointerup", () => wrap.classList.remove("is-down"), { passive: true });
   document.addEventListener("pointerleave", () => wrap.classList.add("is-hidden"));
@@ -64,20 +60,17 @@
 
   function frame(now) {
     const dt = Math.min(0.1, Math.max(0, (now - last) / 1000)); last = now;
-    const k = reduce ? 1 : 1 - Math.exp(-dt * 16), ks = reduce ? 1 : 1 - Math.exp(-dt * 14);
-    if (target && !target.isConnected) { target = null; tw = th = 34; tr = 17; wrap.classList.remove("is-btn"); }
+    if (target && !target.isConnected) { target = null; wrap.classList.remove("is-on", "has-label"); }
     if (target) {
       const r = target.getBoundingClientRect();
-      tx = r.left + r.width / 2; ty = r.top + r.height / 2;
-      tw = r.width + 12; th = r.height + 12;
-      tr = Math.min(th / 2, parseFloat(getComputedStyle(target).borderRadius) + 6 || 14);
-      tx += (x - tx) * 0.12; ty += (y - ty) * 0.12;
-    } else { tx = x; ty = y; }
-    rx += (tx - rx) * k; ry += (ty - ry) * k;
-    rw += (tw - rw) * ks; rh += (th - rh) * ks; rr += (tr - rr) * ks;
-    ring.style.width = rw.toFixed(1) + "px"; ring.style.height = rh.toFixed(1) + "px"; ring.style.borderRadius = rr.toFixed(1) + "px";
-    ring.style.transform = "translate3d(" + (rx - rw / 2).toFixed(1) + "px," + (ry - rh / 2).toFixed(1) + "px,0)";
-    dot.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+      tx = r.left + r.width / 2; ty = r.top + r.height / 2; tw = r.width + 14; th = r.height + 14;
+      if (tw > innerWidth * 0.9 || th > innerHeight * 0.8) { tx = x; ty = y; tw = th = 44; }
+    } else { tx = x; ty = y; tw = th = 26; }
+    const k = reduce ? 1 : 1 - Math.exp(-dt * (target ? 20 : 13));
+    bx += (tx - bx) * k; by += (ty - by) * k; bw += (tw - bw) * k; bh += (th - bh) * k;
+    box.style.width = bw.toFixed(1) + "px"; box.style.height = bh.toFixed(1) + "px";
+    box.style.transform = "translate3d(" + (bx - bw / 2).toFixed(1) + "px," + (by - bh / 2).toFixed(1) + "px,0)";
+    cross.style.transform = "translate3d(" + x + "px," + y + "px,0)";
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

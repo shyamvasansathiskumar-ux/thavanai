@@ -749,18 +749,32 @@ INSERT INTO data_category (name, is_sensitive) VALUES
 
   // ------------------------------------------------------------------ the database console (as thavanai_app: no DROP, ALTER, CREATE or PRAGMA)
   const ALLOWED = /^\s*(select|insert|update|delete|with)\b/i;
+  const SECRET_COLS = /\b(password_hash|salt)\b/i;
+  const TABLE_NAMES = /\b(club|app_user|event|data_category|data_collection|collection_category|deletion_log)\b/gi;
   const FORBIDDEN = /\b(pragma|attach|detach|drop|alter|create|vacuum|reindex|analyze|load_extension|sqlite_master|sqlite_schema|sqlite_sequence)\b/i;
   function consoleRun(db, sql) {
     const s = String(sql || "").trim().replace(/;\s*$/, "");
     if (!s) throw new ValidationError("Type one SQL statement.");
     if (s.length > 2000) throw new ValidationError("That statement is too long for the console.");
     if (!ALLOWED.test(s) || FORBIDDEN.test(s)) throw new ValidationError("ERROR 1142: thavanai_app may only SELECT, INSERT, UPDATE and DELETE. It has no DROP, ALTER, CREATE or PRAGMA rights.");
+    // structural checks run on the statement with its quoted text blanked out, so a value can't hide or fake a keyword
+    const bare = s.replace(/'(?:[^']|'')*'/g, "''").replace(/--[^\n]*/g, " ").replace(/\/\*[\s\S]*?\*\//g, " ");
+    if (/;/.test(bare)) throw new ValidationError("One statement at a time. The console runs a single statement, so nothing after a semicolon can slip through.");
+    if (/\brecursive\b/i.test(bare)) throw new ValidationError("ERROR 1142: recursive queries are switched off in this console, so a runaway query cannot freeze the page.");
+    if (/\b(randomblob|zeroblob|printf|format)\s*\(/i.test(bare)) throw new ValidationError("ERROR 1142: randomblob, zeroblob, printf and format are switched off in this console.");
+    if ((bare.match(TABLE_NAMES) || []).length > 6) throw new ValidationError("ERROR 1142: at most six table references in one console statement.");
+    if (SECRET_COLS.test(bare)) throw new ValidationError("ERROR 1143 (42000): SELECT command denied to user 'thavanai_app' for column '" + bare.match(SECRET_COLS)[1].toLowerCase() + "'. Password hashes and salts never leave the login code.");
+    if (/\bapp_user\b/i.test(bare)) {
+      if (/\b(insert|update|delete|replace)\b/i.test(bare)) throw new ValidationError("ERROR 1142 (42000): accounts can only be changed through the app (Clubs, events and coordinators), never straight in SQL.");
+      if (/\b(union|intersect|except|with)\b/i.test(bare)) throw new ValidationError("ERROR 1142 (42000): UNION, INTERSECT, EXCEPT and WITH are not allowed on app_user, so its hidden columns cannot be renamed into view.");
+    }
     let st;
     try { st = db.db.prepare(s); } catch (e) { throw translate(e); }
     try {
       const cols = st.getColumnNames();
+      const hide = cols.map((c) => SECRET_COLS.test(c));
       const rows = [];
-      while (st.step()) { rows.push(st.get()); if (rows.length >= 200) break; }
+      while (st.step()) { const r = st.get(); rows.push(hide.some(Boolean) ? r.map((v, i) => hide[i] ? "(hidden)" : v) : r); if (rows.length >= 200) break; }
       const changes = cols.length ? 0 : db.db.getRowsModified();
       if (!cols.length) db.changed();
       return { columns: cols, rows, changes };

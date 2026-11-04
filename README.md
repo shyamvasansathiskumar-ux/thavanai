@@ -17,9 +17,10 @@ rebuilt to run entirely in the browser, so it can be tried without installing an
 - **Database:** the same 7 tables, 5 CHECK constraints, foreign keys and 4 triggers as `sql/schema.sql`. They run on SQLite
   (sql.js), inside the page. The database is kept only in your browser (IndexedDB). "Reset the demo" wipes it.
 - **Passwords:** PBKDF2-HMAC-SHA256 with 600,000 iterations and a 16-byte salt (Web Crypto), and a constant-time compare.
-  Wrong usernames take as long as wrong passwords. After 5 wrong attempts, login locks for 30 seconds.
+  Wrong usernames take as long as wrong passwords. After 5 wrong attempts, login locks for 30 seconds, in every tab and across browser restarts.
 - **Queries:** every query is a prepared statement with bound values.
 - **Roles:** coordinators see and change only their own club. This is checked in the data layer on every read and write.
+- **Admin console:** runs one statement at a time as `thavanai_app` (SELECT, INSERT, UPDATE, DELETE only). Password hashes and salts are hidden, accounts cannot be changed in SQL, and recursive, multi-statement or oversized queries are refused.
 - **No personal data:** text that looks like a phone number, email, register number or ID number is refused.
 - **Plain text only:** every free-text field refuses HTML or script tags, `javascript:` links, event handlers and encoded markup, and drops invisible characters that can disguise text. Nothing is stripped silently; the user is told what was refused. SQL needs no stripping because every query binds its values.
 - **Page security:**

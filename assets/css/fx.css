@@ -80,8 +80,6 @@
 
 /* ---------- glass: lit edge and a light that follows the pointer */
 .glass { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), var(--shadow); }
-.spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(156, 211, 175, 0.2), transparent 50%); opacity: 0; transition: opacity 0.35s; }
-.spot:hover::after { opacity: 1; }
 .tilt { transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.25s; transform-style: preserve-3d; will-change: transform; }
 .mag { transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), background 0.2s, box-shadow 0.2s, border-color 0.2s; }
 

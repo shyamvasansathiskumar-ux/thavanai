@@ -57,11 +57,22 @@
     db.onChange(() => { clearTimeout(saveTimer); saveTimer = setTimeout(() => Store.put(db.export()), 120); });
   }
 
-  // ---------------------------------------------------------------- login lockout (5 wrong attempts -> 30 seconds), survives a page refresh
+  // ---------------------------------------------------------------- login lockout (5 wrong attempts -> 30 seconds)
+  // Kept in localStorage, so it holds across refreshes, new tabs and a browser restart (the Java app's lockout
+  // resets when the app restarts). Values read back are checked, so an edited entry can't lock anyone out for ever.
   const MAX_ATTEMPTS = 5, LOCK_MS = 30000;
   const Lock = {
-    read() { try { return JSON.parse(sessionStorage.getItem("thv-lock")) || { f: 0, until: 0 }; } catch (e) { return Lock.mem || { f: 0, until: 0 }; } },
-    write(v) { Lock.mem = v; try { sessionStorage.setItem("thv-lock", JSON.stringify(v)); } catch (e) { /* memory only */ } },
+    clean(v) {
+      const now = Date.now();
+      const f = Number.isInteger(v && v.f) ? Math.min(Math.max(v.f, 0), MAX_ATTEMPTS) : 0;
+      const until = Number.isFinite(v && v.until) ? Math.min(v.until, now + LOCK_MS) : 0;
+      return { f, until };
+    },
+    read() {
+      try { return Lock.clean(JSON.parse(localStorage.getItem("thv-lock")) || JSON.parse(sessionStorage.getItem("thv-lock"))); }
+      catch (e) { return Lock.clean(Lock.mem); }
+    },
+    write(v) { Lock.mem = v; try { localStorage.setItem("thv-lock", JSON.stringify(v)); } catch (e) { /* memory only */ } },
     mem: null
   };
 
@@ -651,7 +662,8 @@
       ["Remove a club in use", "DELETE FROM club WHERE club_name = 'Coding Club';"],
       ["Drop the log", "DROP TABLE deletion_log;"],
       ["Overdue query", "SELECT c.club_name, e.event_name, d.record_count, d.delete_by,\n  CAST(julianday(date('now','localtime')) - julianday(d.delete_by) AS INTEGER) AS days_overdue\nFROM data_collection d JOIN event e ON e.event_id = d.event_id JOIN club c ON c.club_id = e.club_id\nWHERE d.status = 'ACTIVE' AND d.delete_by < date('now','localtime')\nORDER BY days_overdue DESC;"],
-      ["Are passwords stored?", "SELECT username, role, substr(password_hash, 1, 16) || '…' AS hash, salt FROM app_user;"]
+      ["Read password hashes", "SELECT username, role, password_hash, salt FROM app_user;"],
+      ["Promote a coordinator", "UPDATE app_user SET role = 'ADMIN', club_id = NULL WHERE username = 'coding_lead';"]
     ];
     const box = h("textarea", { class: "in sql", rows: 6, spellcheck: "false", "aria-label": "SQL statement" });
     box.value = examples[0][1];
@@ -715,7 +727,7 @@
     if (!(await confirmBox("Reset the demo", "Delete the demo database stored in this browser and start again?\nThis only affects your own copy.", "Reset", true))) return;
     user = null;
     await Store.clear();
-    try { sessionStorage.removeItem("thv-lock"); } catch (e) { /* none */ }
+    try { localStorage.removeItem("thv-lock"); sessionStorage.removeItem("thv-lock"); } catch (e) { /* none */ }
     location.replace(location.pathname);
   });
 

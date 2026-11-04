@@ -26,9 +26,6 @@
 /* glass: lit edge and a light that follows the pointer */
 .win, .act, .tile { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), var(--shadow-soft); }
 .win { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), var(--shadow); }
-.spot { position: relative; }
-.spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(156, 211, 175, 0.18), transparent 50%); opacity: 0; transition: opacity 0.3s; }
-.spot:hover::after { opacity: 1; }
 .act { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.2s, box-shadow 0.25s; }
 .act:hover { transform: translateY(-3px); }
 
@@ -43,7 +40,7 @@
 .fx .modal-win { animation: pop3d 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15) both; transform-origin: 50% 40%; }
 @keyframes pop3d { from { opacity: 0; transform: perspective(900px) rotateX(10deg) translateY(16px) scale(0.96); } }
 
-@media print { .spot::after { display: none; } .top { box-shadow: none; } }
+@media print { .top { box-shadow: none; } }
 
 /* ---------- layer 2: clay actions, toast micro-interactions, rolling labels */
 :root { --clay-hi: rgba(255, 255, 255, 0.6); --clay-lo: rgba(15, 36, 24, 0.12); --clay-drop: rgba(15, 36, 24, 0.42); }

@@ -1,5 +1,5 @@
 /* Project site motion: smooth wheel scroll, progress bar, 3D hero, reveals, the pinned "life of a record" story,
-   count-ups, the flip clock, the ER diagram, tilt, magnetic buttons and the glass spotlight.
+   count-ups, the flip clock, the ER diagram, tilt and magnetic buttons.
    Everything here is decoration on top of a page that already works without it. Reduced motion turns it all off. */
 (function () {
   "use strict";
@@ -316,26 +316,8 @@
   addEventListener("resize", () => { lastY = -1; kick(); }, { passive: true });
   kick();
 
-  // ------------------------------------------------------------------ glass: a soft light follows the pointer; cards tilt; main buttons pull
+  // ------------------------------------------------------------------ cards tilt a little; main buttons pull toward the pointer
   if (fine) {
-    const spots = $$(".glass, .shot, .stat");
-    spots.forEach((el) => { el.classList.add("spot"); if (getComputedStyle(el).position === "static") el.style.position = "relative"; });
-    let pend = null, queued = false;
-    document.addEventListener("pointermove", (e) => {
-      pend = e;
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => {
-        queued = false;
-        const ev = pend; if (!ev) return; pend = null;
-        const el = ev.target.closest && ev.target.closest(".spot");
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        el.style.setProperty("--mx", (ev.clientX - r.left).toFixed(0) + "px");
-        el.style.setProperty("--my", (ev.clientY - r.top).toFixed(0) + "px");
-      });
-    }, { passive: true });
-
     $$(".o, .person, .shot").forEach((el) => {
       el.classList.add("tilt");
       el.addEventListener("pointermove", (e) => {

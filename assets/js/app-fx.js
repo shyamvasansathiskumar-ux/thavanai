@@ -1,4 +1,4 @@
-/* Live demo and tests page motion: slim top bar, screen and row entrances, count-up tiles and the glass spotlight.
+/* Live demo and tests page motion: slim top bar, screen and row entrances, and count-up tiles.
    It only adds classes to what app.js has already built; it never changes text other than animating a tile's own number. */
 (function () {
   "use strict";
@@ -54,7 +54,6 @@
       t.dataset.fx = "1";
       Array.from(t.querySelectorAll("tbody tr")).slice(0, 14).forEach((tr, i) => { tr.style.setProperty("--i", i); tr.classList.add("rowin"); });
     });
-    if (fine) document.querySelectorAll(".win:not(.spot), .act:not(.spot), .tile:not(.spot)").forEach((el) => el.classList.add("spot"));
   }
 
   // menu labels roll over on hover (the menu is rebuilt on every screen)
@@ -81,21 +80,4 @@
   if (modalRoot) new MutationObserver(queue).observe(modalRoot, { childList: true });
   process();
 
-  if (fine) {
-    let pend = null, busy = false;
-    document.addEventListener("pointermove", (e) => {
-      pend = e;
-      if (busy) return;
-      busy = true;
-      requestAnimationFrame(() => {
-        busy = false;
-        const ev = pend; pend = null; if (!ev || !ev.target.closest) return;
-        const el = ev.target.closest(".spot");
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        el.style.setProperty("--mx", (ev.clientX - r.left).toFixed(0) + "px");
-        el.style.setProperty("--my", (ev.clientY - r.top).toFixed(0) + "px");
-      });
-    }, { passive: true });
-  }
 })();

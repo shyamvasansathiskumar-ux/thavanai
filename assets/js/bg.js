@@ -1,16 +1,15 @@
 /* Live background: domain-warped noise in the project palette, drawn by a WebGL fragment shader at low resolution
-   behind the glass. It follows the pointer a little and shifts as the page scrolls. Paused when hidden; one still frame
+   behind the glass. It shifts slowly as the page scrolls. Paused when hidden; one still frame
    with reduced motion; the CSS background stays if WebGL is not available. */
 (function () {
   "use strict";
   const atmos = document.querySelector(".atmos");
   if (!atmos) return;
 
-  // the technical grid: drifts slowly, moves a little slower than the page, and is clearest around the pointer
+  // the technical grid: drifts slowly and moves a little slower than the page
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     let gmx = 72, gmy = 28, tgx = 72, tgy = 28, lastG = 0;
     const g0 = performance.now();
-    addEventListener("pointermove", (e) => { tgx = (e.clientX / innerWidth) * 100; tgy = (e.clientY / innerHeight) * 100; }, { passive: true });
     const grid = (now) => {
       if (!document.hidden && now - lastG > 33) {
         lastG = now;
@@ -52,14 +51,12 @@
     " float t=uTime*.035;",
     " p+=vec2(0.,uScroll*.35);",
     " vec2 m=(uMouse-.5*uRes)/min(uRes.x,uRes.y);",
-    " p+=(p-m)*.06*exp(-2.5*length(p-m));",
     " vec2 q=vec2(fbm(p*1.3+t),fbm(p*1.3-t+vec2(3.1,1.7)));",
     " vec2 r=vec2(fbm(p*1.5+2.*q+vec2(1.7,9.2)+t*1.2),fbm(p*1.5+2.*q+vec2(8.3,2.8)-t*.8));",
     " float f=fbm(p*1.1+2.4*r);",
     " vec3 col=mix(uA,uB,smoothstep(.32,.82,f));",
     " col=mix(col,uC,smoothstep(.5,.95,r.x)*.6);",
     " col=mix(col,uD,smoothstep(.62,.98,f*1.1*r.y)*.45);",
-    " col+=uB*.08*exp(-5.*length(p-m));",
     " col*=1.-.10*length(uv-.5);",
     " gl_FragColor=vec4(col,1.);",
     "}"
