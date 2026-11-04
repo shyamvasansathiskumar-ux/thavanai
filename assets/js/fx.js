@@ -443,6 +443,7 @@
       G.fromTo(el, { y: 80, rotate: -10 }, { y: -100, rotate: 10, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 1.2 } });
     });
 
+    let erTables = [], termLines = [];
     // schema: connector lines are drawn by the scroll itself; once drawn, keys flow along them as small dots
     if (er) {
       er.classList.add("in", "scrub");
@@ -462,7 +463,7 @@
       });
       G.fromTo(lines, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: "none", stagger: 0.18,
         scrollTrigger: { trigger: er, start: "top 85%", end: "center 40%", scrub: 0.6, onUpdate: (self) => er.classList.toggle("flow", self.progress > 0.97) } });
-      G.from($$(".er-t", er), { opacity: 0, duration: 0.6, ease: "power2.out", stagger: 0.07, clearProps: "opacity", scrollTrigger: { trigger: er, start: "top 85%", once: true } });
+      erTables = $$(".er-t", er);
     }
 
     // the green band opens out of a rounded card
@@ -483,20 +484,32 @@
         else line.append(nd);
       });
       push();
-      G.from($$(".ln", termEl), { opacity: 0, x: -16, duration: 0.4, stagger: 0.13, ease: "power2.out", scrollTrigger: { trigger: termEl, start: "top 80%", once: true } });
+      termLines = $$(".ln", termEl);
     }
 
     // groups arrive in a stagger
+    // The trigger only says "show now"; the animation is a separate tween that clears itself when done.
+    // (A tween bound to its trigger gets rewound when ScrollTrigger re-measures the page, which left cards stuck.)
+    const showWhen = (els, trig, from, to, start) => {
+      if (!els.length) return;
+      G.set(els, from);
+      let shown = false;
+      const show = () => { if (shown) return; shown = true; G.to(els, to); };
+      ST.create({ trigger: trig, start: start || "top 84%", onEnter: show, onEnterBack: show, onLeave: show, onRefresh: (self) => { if (self.progress > 0) show(); } });
+    };
     const batchIn = (sel, from, trig) => {
       const els = $$(sel); if (!els.length) return;
-      G.from(els, Object.assign({ opacity: 0, duration: 0.95, ease: "expo.out", stagger: 0.08, scrollTrigger: { trigger: trig, start: "top 84%", once: true } }, from));
+      const stagger = from.stagger || 0.08; const f = Object.assign({ opacity: 0 }, from); delete f.stagger;
+      showWhen(els, trig, f, { x: 0, y: 0, scale: 1, rotationX: 0, opacity: 1, duration: 0.95, ease: "expo.out", stagger, clearProps: "transform,opacity" });
     };
+    if (erTables.length) showWhen(erTables, er, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out", stagger: 0.07, clearProps: "opacity" }, "top 85%");
+    if (termLines.length) showWhen(termLines, termEl, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.13, ease: "power2.out", clearProps: "transform,opacity" }, "top 80%");
     batchIn(".layers > div", { x: -56 }, ".layers");
     batchIn(".oop .o", { y: 70, rotationX: -38, transformPerspective: 900, stagger: { each: 0.06, grid: "auto" } }, ".oop");
     batchIn(".team .person", { y: 60, scale: 0.95, stagger: 0.12 }, ".team");
     batchIn("#problem tbody tr", { y: 18, stagger: 0.08 }, "#problem table");
-    batchIn(".adds li", { x: 34, stagger: 0.07 }, ".adds");
-    batchIn(".tally li", { x: 24, stagger: 0.05 }, ".tally");
+    batchIn(".adds li", { y: 26, stagger: 0.07 }, ".adds");
+    batchIn(".tally li", { x: -24, stagger: 0.05 }, ".tally");
 
     // the law strip runs faster while you scroll
     const mt = $(".marquee-track");
@@ -518,11 +531,13 @@
       const dist = () => Math.max(0, track.scrollWidth - innerWidth);
       G.to(track, {
         x: () => -dist(), ease: "none",
-        scrollTrigger: { trigger: pin, start: "top top", end: () => "+=" + dist(), pin: true, scrub: 0.8, invalidateOnRefresh: true, anticipatePin: 1,
+        scrollTrigger: { trigger: pin, start: "top top", end: () => "+=" + dist(), pin: true, scrub: 0.8, invalidateOnRefresh: true, anticipatePin: 1, refreshPriority: 10,
           onUpdate: (self) => { if (hb) hb.style.transform = "scaleX(" + self.progress.toFixed(4) + ")"; } }
       });
       return () => sec.classList.remove("hs");
     });
+    // the pin adds thousands of pixels: measure it first, then everything below it
+    ST.sort(); ST.refresh();
 
     addEventListener("load", () => ST.refresh(), { once: true });
   }

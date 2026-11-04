@@ -63,10 +63,10 @@
               return;
             }
             if (clay) clay.face(0);
-            setTimeout(() => el.classList.add("is-stamp"), 380);
-            setTimeout(() => el.classList.add("is-done"), 1000);
-            setTimeout(() => { el.classList.add("is-open"); reveal(); resolve(); }, 1250);
-            setTimeout(() => { if (clay) clay.destroy(); el.remove(); }, 2400);
+            setTimeout(() => el.classList.add("is-stamp"), 600);
+            setTimeout(() => el.classList.add("is-done"), 1900);
+            setTimeout(() => { el.classList.add("is-open"); reveal(); resolve(); }, 2150);
+            setTimeout(() => { if (clay) clay.destroy(); el.remove(); }, 3300);
           };
         });
       }

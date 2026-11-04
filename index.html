@@ -14,12 +14,13 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://shyamvasansathiskumar-ux.github.io/thavanai/assets/img/og.png">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-Kad74ibDetjZPhsBB1Ji31JKZc2p61B2S17PGq2RvEiLuoewlF10UBqFTaaaZy8B">
-<link rel="stylesheet" href="assets/css/site.css" integrity="sha384-Xh/zMzxgUIH37yBs99pz9DFDS+kTf6YqhDbjI5ApQupl3LSre/+mJQGjk9IwVNzj">
-<link rel="stylesheet" href="assets/css/fx.css" integrity="sha384-Ph4TA/gJBgNB11OkuPgZANwACeQzznaV4tmhzUMF9v4aSAIy0Ww1jNSy3jr2yINT">
-<link rel="stylesheet" href="assets/css/loader.css" integrity="sha384-a7gD2N38++oFuIK6Qz+KBtcKm9YT/AcjjTo/GaiPUt5qPx5bRMP2pcj4B7nkNTav">
-<script src="assets/js/guard.js" integrity="sha384-UGHvYior/XbFNX6KcgeIudAtk2i77NsYqFVesXb/4KCG66o6C7jhHVMN8LN9oMUw"></script>
-<script src="assets/js/intro.js" integrity="sha384-jIJtqJ7VFId8TcrTEaZSdVrbklVIRbodr9o5+yhcggYcosal1Gywy3vCFt/qHDBo"></script>
+<link rel="stylesheet" href="assets/css/base.css?v=12c902fc08" integrity="sha384-Z34YvhBTGqnwTFEpUB7k32kK5lECJ4f/ksJVhrPsVPoWMYQVeQaseQnSAJYKidRe">
+<link rel="stylesheet" href="assets/css/site.css?v=46f916a325" integrity="sha384-Xh/zMzxgUIH37yBs99pz9DFDS+kTf6YqhDbjI5ApQupl3LSre/+mJQGjk9IwVNzj">
+<link rel="stylesheet" href="assets/css/fx.css?v=259842459b" integrity="sha384-Ph4TA/gJBgNB11OkuPgZANwACeQzznaV4tmhzUMF9v4aSAIy0Ww1jNSy3jr2yINT">
+<link rel="stylesheet" href="assets/css/loader.css?v=6a0c0f3128" integrity="sha384-a7gD2N38++oFuIK6Qz+KBtcKm9YT/AcjjTo/GaiPUt5qPx5bRMP2pcj4B7nkNTav">
+<link rel="stylesheet" href="assets/css/proof.css?v=29915e61d6" integrity="sha384-0GQT9IxfMTHPr0xP0rDTJAnno42E7cbQECvwa4wZADI7fkqm05IkfXTZ4Lq3GVv8">
+<script src="assets/js/guard.js?v=45addfdf32" integrity="sha384-PrQsl8xrVR86PqE9nZKXEXJhfdWKjc5XTPMA8xArhTSSgZ0NejkZZ/DLik69qf3Z"></script>
+<script src="assets/js/intro.js?v=e21e0f0fde" integrity="sha384-jIJtqJ7VFId8TcrTEaZSdVrbklVIRbodr9o5+yhcggYcosal1Gywy3vCFt/qHDBo"></script>
 </head>
 <body>
 <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
@@ -71,6 +72,31 @@
     <div class="ld-foot"><ol class="ld-log" aria-hidden="true"></ol><span class="ld-tag">Record · Delete · Prove</span><span class="ld-num"><b>0</b><i>%</i></span><span class="ld-status">Loading the typefaces</span></div>
   </div>
   <div class="ld-bar"><i></i></div>
+</div>
+
+<!-- the page proof: crop marks, place and time, pointer readout, section rail, retention ruler -->
+<div class="hud" aria-hidden="true">
+  <i class="crop tl"></i><i class="crop tr"></i><i class="crop bl"></i><i class="crop br"></i>
+  <span class="hud-loc">REC · THANDALAM, CHENNAI · IST <b id="hudClock">--:--:--</b><span class="hud-geo"> · 13.01°N 80.00°E</span></span>
+  <span class="hud-xy"><b id="hudX">0000</b> X <b id="hudY">0000</b> Y · <b id="hudP">000</b>%</span>
+  <span class="hud-v hud-vl"><b class="ta">தவணை</b> DUE DATE · REGISTER Nº 01</span>
+</div>
+<nav class="rail" id="rail" aria-label="Sections">
+  <a href="#problem"><i></i><span>01 Problem</span></a>
+  <a href="#law"><i></i><span>02 Law</span></a>
+  <a href="#how"><i></i><span>03 Due date</span></a>
+  <a href="#decision"><i></i><span>04 No personal data</span></a>
+  <a href="#inside"><i></i><span>05 Screens</span></a>
+  <a href="#arch"><i></i><span>06 Database</span></a>
+  <a href="#oop"><i></i><span>07 OOP</span></a>
+  <a href="#security"><i></i><span>08 Security</span></a>
+  <a href="#tests"><i></i><span>09 Tests</span></a>
+  <a href="#team"><i></i><span>10 Team</span></a>
+</nav>
+<div class="ruler" id="ruler" aria-hidden="true">
+  <div class="ruler-scale" id="rulerScale"></div>
+  <div class="ruler-mark" id="rulerMark"><i></i><b id="rulerDay">000</b><span id="rulerTxt">days kept</span></div>
+  <p class="ruler-cap">This page, read as<br>a 365-day retention<br>Record · Delete · Prove</p>
 </div>
 
 <nav class="nav" id="nav">
@@ -438,7 +464,7 @@
   </section>
 
   <!-- OOP -->
-  <section class="sec">
+  <section class="sec" id="oop">
     <div class="wrap">
       <p class="eyebrow">Object-oriented design</p>
       <h2 class="h2">Each OOP concept does a real job.</h2>
@@ -558,16 +584,17 @@ RESULT: 61 passed, 0 failed</pre>
   </div>
 </footer>
 
-<script src="assets/js/engine.js" integrity="sha384-6VyPszY/N1yhjqrYFZmbMtmR+cekjylLjuvuI97Mkr0jMPce6rZJJdqZaRqyTflZ"></script>
-<script src="assets/js/clay3d.js" integrity="sha384-mcf9tpFLgazQVcxiabZH8syb/qddyFOVhKyxvYIQZeql2MIYOwqT0S3FbyIqLvRE"></script>
-<script src="assets/js/loader.js" integrity="sha384-VttZGeVWtL9aq9zhLdHJKWUt0J4mL68qfLphAH4ixj8V1BtjS4JpLnGEDwscWckQ"></script>
-<script src="assets/js/site.js" integrity="sha384-g3acAxaRoKUYx7cdTg4UmRcUR8KKrRQ/sxBgqxop3NLQKMRBe5eEj/K9pmTlWkEH"></script>
-<script src="vendor/gsap.min.js" integrity="sha384-3vCAhD+a3BOliP3QqjQINn6ZWiZxoqu0WFxX5ZQZgqekDZuSb1mJBrrLMmu94H8f"></script>
-<script src="vendor/ScrollTrigger.min.js" integrity="sha384-H2WL1iy/jKQQ7MTHU2hskZKNHTYWWD/KgKE1vCNnaWY8An2ESTh23KN/fTp8XS3j"></script>
-<script src="vendor/SplitText.min.js" integrity="sha384-e98MX/fxZrUXA/6T+aCptryLfHgR2FpEmWxDbbPloHT0Qg79dEXKdLJ/iwD2lzxs"></script>
-<script src="assets/js/fx.js" integrity="sha384-XKYZIUH3rCLmFmx34OcTlp5+5NkLA5f1MEyyyJONT450tWF5m0dVuftF2itUMfP7"></script>
-<script src="assets/js/bg.js" integrity="sha384-rQSH+GQWGJqVEN+FAwYdX5BfTF1MwBKv0r/XacNlOj/4UsHISSAChW7iqIj1/VPx"></script>
-<script src="assets/js/cursor.js" integrity="sha384-U9oDgyWzjD8gtbGl5lyaIg0kWe6+InZGWZqIbKpXkif5flpg/xvrpZ3cqm3pDNZn"></script>
-<script src="assets/js/scene3d.js" integrity="sha384-lOoWeB/zIVDageAC/ftushwLjw67tECpk0g3nBIkyJ/SOFmZPAjDWMMv9xOLRVEw"></script>
+<script src="assets/js/engine.js?v=e3d6bf76e1" integrity="sha384-6VyPszY/N1yhjqrYFZmbMtmR+cekjylLjuvuI97Mkr0jMPce6rZJJdqZaRqyTflZ"></script>
+<script src="assets/js/clay3d.js?v=4d6bd614d0" integrity="sha384-mcf9tpFLgazQVcxiabZH8syb/qddyFOVhKyxvYIQZeql2MIYOwqT0S3FbyIqLvRE"></script>
+<script src="assets/js/loader.js?v=8f487d12f0" integrity="sha384-VKN7BrT0Z0RXspRld6dR+1Fetpf39b27jxBTtGVnJ6Q2HOE/jwd0ZfKLxjbV+dfM"></script>
+<script src="assets/js/site.js?v=79933a1bc8" integrity="sha384-XcUEnGvvBgzSPzz5h7VZrIHAtI7TXCxbUAL14wZ4/yWXNrZQY5gRtX3mMUQPIusZ"></script>
+<script src="vendor/gsap.min.js?v=3d1bea374a" integrity="sha384-3vCAhD+a3BOliP3QqjQINn6ZWiZxoqu0WFxX5ZQZgqekDZuSb1mJBrrLMmu94H8f"></script>
+<script src="vendor/ScrollTrigger.min.js?v=b5bb360661" integrity="sha384-H2WL1iy/jKQQ7MTHU2hskZKNHTYWWD/KgKE1vCNnaWY8An2ESTh23KN/fTp8XS3j"></script>
+<script src="vendor/SplitText.min.js?v=7b299a6b26" integrity="sha384-e98MX/fxZrUXA/6T+aCptryLfHgR2FpEmWxDbbPloHT0Qg79dEXKdLJ/iwD2lzxs"></script>
+<script src="assets/js/fx.js?v=66f6816774" integrity="sha384-nhUIHKXB6zQ6YiVXs+GzuRxJqFm/esh9hOjYvadXp9RxSVmLcqcKtlRxFWqe2EV9"></script>
+<script src="assets/js/bg.js?v=02662f1d0c" integrity="sha384-rQSH+GQWGJqVEN+FAwYdX5BfTF1MwBKv0r/XacNlOj/4UsHISSAChW7iqIj1/VPx"></script>
+<script src="assets/js/cursor.js?v=3cedf11734" integrity="sha384-eo0kyAC9YtHeYF2i/WvLYheJJciJRrCWSn37aNb38GJZJTwa+C7rOqgz9sTmUvNn"></script>
+<script src="assets/js/proof.js?v=b793999bc5" integrity="sha384-cOyRvIJ7G1z83MKUFePpAsj3/uBWIIfrqMBblsq1d1Cy2HO3W+Gp7n3gC40sYQ3B"></script>
+<script src="assets/js/scene3d.js?v=72be9c4cd7" integrity="sha384-lOoWeB/zIVDageAC/ftushwLjw67tECpk0g3nBIkyJ/SOFmZPAjDWMMv9xOLRVEw"></script>
 </body>
 </html>

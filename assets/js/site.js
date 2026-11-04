@@ -11,7 +11,7 @@
   const reveal = () => { root.dataset.revealed = "1"; document.dispatchEvent(new CustomEvent("thv:reveal")); };
   if (loaderEl && root.classList.contains("intro-play") && T.Loader) {
     document.body.style.overflow = "hidden";
-    const L = T.Loader(loaderEl, { min: 2000 });
+    const L = T.Loader(loaderEl, { min: 4200 });
     L.set(0.12, "Loading the typefaces");
     const fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
     fonts.then(() => { L.set(0.55, "Typefaces ready · preparing the register"); L.log("fonts", "Bricolage Grotesque · Public Sans · Martian Mono · Noto Sans Tamil", true); });

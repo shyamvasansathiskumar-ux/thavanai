@@ -722,7 +722,7 @@
   async function boot() {
     const splash = $("#splash");
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const L = T.Loader && splash && splash.classList.contains("loader") ? T.Loader(splash, { min: 1800 }) : null;
+    const L = T.Loader && splash && splash.classList.contains("loader") ? T.Loader(splash, { min: 2600 }) : null;
     const say = (f, text) => { if (L) L.set(f, text); };
     const minShow = new Promise((r) => setTimeout(r, L ? 0 : (reduce ? 300 : 2500)));
     let failed = null;

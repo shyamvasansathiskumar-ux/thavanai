@@ -51,6 +51,9 @@
     wrap.classList.toggle("has-label", !!name);
     wrap.classList.toggle("is-btn", !!target);
     if (target) return;
+    const plainLink = hot && !name && hot.matches("a[href]") && !hot.closest(".hud");
+    wrap.classList.toggle("is-sq", !!plainLink);
+    if (plainLink) { tw = th = 12; tr = 0; return; }
     const size = name ? 72 : hot ? 52 : 34;
     tw = th = size; tr = size / 2;
   }

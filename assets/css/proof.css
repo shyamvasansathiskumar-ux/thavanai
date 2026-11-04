@@ -1,0 +1,66 @@
+/* Thavanai: the page proof. A fixed frame around the page (crop marks, place and time, pointer readout),
+   a rail of section ticks on the left, and a retention ruler on the right that reads the page as 365 days. */
+
+.hud { position: fixed; inset: 0; z-index: 45; pointer-events: none; color: #e8e6df; mix-blend-mode: difference; font: 400 11px/1.2 var(--pixel); letter-spacing: 0.06em; text-transform: uppercase; font-variation-settings: normal; }
+.hud b { font-weight: 400; font-variant-numeric: tabular-nums; }
+.crop { position: absolute; width: 16px; height: 16px; opacity: 0.7; }
+.crop.tl { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
+.crop.tr { top: 10px; right: 10px; border-top: 1px solid; border-right: 1px solid; }
+.crop.bl { bottom: 10px; left: 10px; border-bottom: 1px solid; border-left: 1px solid; }
+.crop.br { bottom: 10px; right: 10px; border-bottom: 1px solid; border-right: 1px solid; }
+.hud-loc { position: absolute; left: 34px; bottom: 15px; }
+.hud-xy { position: absolute; right: 34px; bottom: 15px; }
+.hud-v { position: absolute; writing-mode: vertical-rl; white-space: nowrap; opacity: 0.75; }
+.hud-v .ta { font: 700 12px var(--tamil); letter-spacing: 0; margin-bottom: 0.8em; text-transform: none; }
+.hud-vl { left: 15px; bottom: 56px; transform: rotate(180deg); }
+.hud-vr { right: 15px; top: 96px; }
+/* frame lines at the content edges */
+.hud::before, .hud::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: currentColor; opacity: 0.09; }
+.hud::before { left: max(56px, calc(50% - 600px)); }
+.hud::after { right: max(56px, calc(50% - 600px)); }
+
+/* registration marks where each section starts, on the frame lines */
+.reg { position: absolute; top: -8px; width: 17px; height: 17px; z-index: 3; pointer-events: none; mix-blend-mode: difference; color: #e8e6df; opacity: 0.6; }
+.reg::before, .reg::after { content: ""; position: absolute; background: currentColor; }
+.reg::before { left: 8px; top: 0; width: 1px; height: 17px; }
+.reg::after { top: 8px; left: 0; height: 1px; width: 17px; }
+.reg.l { left: calc(max(56px, calc(50% - 600px)) - 8px); }
+.reg.r { right: calc(max(56px, calc(50% - 600px)) - 8px); }
+.reg-n { position: absolute; top: 4px; font: 400 10px/1 var(--pixel); letter-spacing: 0.08em; color: #e8e6df; mix-blend-mode: difference; opacity: 0.55; pointer-events: none; z-index: 3; }
+.reg-n.l { left: calc(max(56px, calc(50% - 600px)) + 14px); }
+
+/* section rail */
+.rail { position: fixed; left: 18px; top: 50%; transform: translateY(-50%); z-index: 46; display: flex; flex-direction: column; gap: 11px; }
+.rail a { position: relative; display: flex; align-items: center; gap: 10px; height: 14px; text-decoration: none; color: var(--muted); font: 400 10.5px/1 var(--pixel); letter-spacing: 0.08em; text-transform: uppercase; }
+.rail a i { display: block; width: 12px; height: 1px; background: currentColor; transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s; }
+.rail a span { opacity: 0; transform: translateX(-6px); transition: opacity 0.3s, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); white-space: nowrap; padding: 3px 6px; background: color-mix(in srgb, var(--paper) 80%, transparent); border: 1px dashed transparent; }
+.rail a:hover span, .rail a:focus-visible span { opacity: 1; transform: none; border-color: currentColor; }
+.rail a.on { color: var(--ink); }
+.rail a.on i { width: 30px; background: var(--green); }
+.rail a.done i { background: var(--ink-2); }
+@media (min-width: 1720px) { .rail a.on span { opacity: 1; transform: none; } }
+
+/* retention ruler */
+.ruler { position: fixed; right: 18px; top: 50%; height: 54vh; transform: translateY(-50%); z-index: 46; pointer-events: none; width: 64px; }
+.ruler-scale { position: absolute; right: 0; top: 0; bottom: 0; width: 1px; background: var(--line-2); }
+.ruler-scale i { position: absolute; right: 0; height: 1px; width: 6px; background: var(--muted); }
+.ruler-scale i.major { width: 12px; background: var(--ink-2); }
+.ruler-scale em { position: absolute; right: 16px; transform: translateY(-50%); font: 400 9.5px/1 var(--pixel); font-style: normal; color: var(--muted); letter-spacing: 0.04em; }
+.ruler-mark { --c: var(--green); position: absolute; right: 0; top: 0; display: flex; align-items: center; gap: 6px; transform: translateY(-50%); flex-direction: row-reverse; will-change: top; }
+.ruler-mark i { width: 22px; height: 2px; background: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 18%, transparent); }
+.ruler-mark b { font: 400 15px/1 var(--pixel); color: var(--c); font-variant-numeric: tabular-nums; }
+.ruler-mark span { position: absolute; right: 0; top: 14px; font: 400 9.5px/1.2 var(--pixel); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+.ruler-mark.soon { --c: var(--amber); }
+.ruler-mark.due { --c: var(--red); }
+.ruler-cap { position: absolute; right: -6px; bottom: -62px; margin: 0; padding: 4px 6px; background: color-mix(in srgb, var(--paper) 78%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); text-align: right; font: 400 9.5px/1.35 var(--pixel); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+
+/* the nav: dashed proof boxes instead of grey pills */
+.nav-links a:not(.btn) { position: relative; background: none !important; }
+.nav-links a:not(.btn)::before { content: ""; position: absolute; inset: 2px -2px; border: 1px dashed currentColor; border-radius: 2px; opacity: 0; transform: scale(0.92); transition: opacity 0.2s, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.nav-links a:not(.btn):hover::before, .nav-links a:not(.btn):focus-visible::before { opacity: 0.7; transform: none; }
+
+/* the gutters only exist on wide screens */
+@media (max-width: 1259px) { .hud::before, .hud::after, .reg, .reg-n { display: none; } }
+@media (max-width: 1179px) { .rail, .ruler, .hud-v { display: none; } }
+@media (max-width: 760px) { .hud-xy, .hud-geo { display: none; } .hud-loc { white-space: nowrap; max-width: calc(100vw - 48px); overflow: hidden; } .hud-loc { left: 24px; font-size: 9.5px; } .crop { width: 12px; height: 12px; } }
+@media print { .hud, .rail, .ruler, .reg, .reg-n { display: none; } }

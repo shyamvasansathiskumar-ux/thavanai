@@ -2,6 +2,7 @@
 @font-face { font-family: "Bricolage"; font-weight: 200 800; font-stretch: 75% 100%; font-display: swap; src: url("../fonts/bricolage-grotesque-latin-var.woff2") format("woff2-variations"), url("../fonts/bricolage-grotesque-latin-var.woff2") format("woff2"); }
 @font-face { font-family: "Public Sans"; font-weight: 100 900; font-display: swap; src: url("../fonts/public-sans-latin-var.woff2") format("woff2-variations"), url("../fonts/public-sans-latin-var.woff2") format("woff2"); }
 @font-face { font-family: "Martian Mono"; font-weight: 100 800; font-stretch: 75% 112.5%; font-display: swap; src: url("../fonts/martian-mono-latin-var.woff2") format("woff2-variations"), url("../fonts/martian-mono-latin-var.woff2") format("woff2"); }
+@font-face { font-family: "Departure Mono"; font-weight: 400; font-display: swap; src: url("../fonts/departure-mono.woff2") format("woff2"); }
 @font-face { font-family: "Tamil"; font-weight: 500; font-display: swap; src: url("../fonts/noto-sans-tamil-tamil-500-normal.woff2") format("woff2"); }
 @font-face { font-family: "Tamil"; font-weight: 700; font-display: swap; src: url("../fonts/noto-sans-tamil-tamil-700-normal.woff2") format("woff2"); }
 
@@ -32,6 +33,7 @@
   --display: "Bricolage", "Helvetica Neue", Arial, sans-serif;
   --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "Martian Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --pixel: "Departure Mono", "Martian Mono", ui-monospace, monospace;
   --tamil: "Tamil", "Noto Sans Tamil", "Latha", sans-serif;
   --r: 14px;
   --grid-major: rgba(23, 33, 27, 0.075);
@@ -148,3 +150,6 @@ p { margin: 0; }
 html.has-cur, html.has-cur a, html.has-cur button, html.has-cur label, html.has-cur summary, html.has-cur [role="button"], html.has-cur .lock-gl, html.has-cur .er-t { cursor: none; }
 html.has-cur-ring .cur-dot { display: none; }
 @media (hover: none), (pointer: coarse) { .cur { display: none; } }
+.cur.is-sq .cur-ring { background: #fff; border-color: #fff; }
+.cur.is-sq .cur-dot { opacity: 0; }
+.ld-retry { grid-column: 1 / -1; justify-self: start; margin-top: 10px; padding: 10px 16px; border: 1px dashed #9cd3af; color: #f3f3ee; font: 500 13px var(--mono); text-decoration: none; }
