@@ -112,6 +112,11 @@ p { margin: 0; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary, :root:not([data-theme="light"]) .btn.danger { --t: #0f1511; } }
 :root[data-theme="dark"] .btn.primary, :root[data-theme="dark"] .btn.danger { --t: #0f1511; }
 
+/* page-to-page cross-fade where the browser supports it */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
+
 @media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

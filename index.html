@@ -14,13 +14,15 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://shyamvasansathiskumar-ux.github.io/thavanai/assets/img/og.png">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-Mf1oFjIJ6hLTl528oOY0fd4qyjCVRIctCUfSfc1TVsNchydVcp3LKysylEeDY0I8">
-<link rel="stylesheet" href="assets/css/site.css" integrity="sha384-taOp5Yt0M/0GNAFofk0Yh6Wfee06FzqgRtsD0MX5A/KcSOfi8piU1DGLfBYl53Zg">
+<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-XcFqErXl2ZKaRCZYYI8YxkO/LBzgYRqp9U7mMKsZpS729oPXr+tMGZW6s00ydNFs">
+<link rel="stylesheet" href="assets/css/site.css" integrity="sha384-Xh/zMzxgUIH37yBs99pz9DFDS+kTf6YqhDbjI5ApQupl3LSre/+mJQGjk9IwVNzj">
+<link rel="stylesheet" href="assets/css/fx.css" integrity="sha384-Y6t2YtH9SOWV2C/6i8Egwmi5g6NNqdwrG95OB7JUhCYFhw59Z+h/e3G5DXib+m+/">
 <script src="assets/js/guard.js" integrity="sha384-UGHvYior/XbFNX6KcgeIudAtk2i77NsYqFVesXb/4KCG66o6C7jhHVMN8LN9oMUw"></script>
-<script src="assets/js/intro.js" integrity="sha384-50mHlIoOiatuygraJZ4O8bGI2BgQOf17iD5tLPlvYrQdqtkc/z7sbKfyAi4s6zaS"></script>
+<script src="assets/js/intro.js" integrity="sha384-jIJtqJ7VFId8TcrTEaZSdVrbklVIRbodr9o5+yhcggYcosal1Gywy3vCFt/qHDBo"></script>
 </head>
 <body>
 <div class="atmos" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
 
 <!-- opening: the label draws itself, the date is stamped -->
 <div id="intro" class="intro" aria-hidden="true">
@@ -72,17 +74,44 @@
       </div>
       <p class="hero-team">Shyam Sathiskumar · Krithika Sree V R · Skandesh Saran S G</p>
     </div>
-    <div class="hero-art" id="heroArt" aria-label="An example data collection label">
-      <div class="label back2" aria-hidden="true"></div>
-      <div class="label back1" aria-hidden="true"></div>
-      <article class="label front">
-        <p class="label-k mono">Collection #1 · Coding Club</p>
-        <h2 class="label-h">Code Sprint 2026 registration</h2>
-        <p class="label-p">214 people</p>
-        <p class="label-p">Name, register no., dept, email, phone</p>
-        <p class="label-d mono">Delete by 21-09-2026</p>
-        <p class="label-stamp" id="heroStamp">Overdue</p>
-      </article>
+    <div class="hero-art" id="heroArt" aria-label="Three data collection labels from the demo data">
+      <div class="ground" aria-hidden="true"></div>
+      <div class="stack" id="stack">
+        <div class="layer l3">
+          <div class="bob b3">
+            <article class="tag glass-tag" aria-label="Collection 12, NSS Unit, deleted">
+              <p class="tag-k mono">Collection #12 · NSS Unit</p>
+              <p class="tag-h">Donor ID check</p>
+              <p class="tag-s"><span class="dot grey" aria-hidden="true"></span>Deleted · proof locked</p>
+            </article>
+          </div>
+        </div>
+        <div class="layer l2">
+          <div class="bob b2">
+            <article class="tag glass-tag" aria-label="Collection 6, Robotics Club">
+              <p class="tag-k mono">Collection #6 · Robotics Club</p>
+              <p class="tag-h">RoboRace team registration</p>
+              <p class="tag-s"><span class="dot amber" aria-hidden="true"></span><span id="heroRobo">Delete by 30-11-2026 · end of semester</span></p>
+            </article>
+          </div>
+        </div>
+        <div class="layer l1">
+          <div class="bob b1">
+            <article class="label front">
+              <p class="label-k mono">Collection #1 · Coding Club</p>
+              <h2 class="label-h">Code Sprint 2026 registration</h2>
+              <p class="label-p">214 people</p>
+              <p class="label-p">Name, register no., dept, email, phone</p>
+              <p class="label-d mono">Delete by 21-09-2026</p>
+              <p class="label-stamp" id="heroStamp">Overdue</p>
+            </article>
+          </div>
+        </div>
+        <span class="chip layer ch1" aria-hidden="true"><span class="bob b4">PBKDF2 · 600,000</span></span>
+        <span class="chip layer ch2" aria-hidden="true"><span class="bob b5">CHECK · ≤ 365 days</span></span>
+        <span class="chip layer ch3 c-red" aria-hidden="true"><span class="bob b6">TRIGGER · proof locked</span></span>
+        <span class="chip layer ch4 c-green" aria-hidden="true"><span class="bob b7">61 / 61 passed</span></span>
+      </div>
     </div>
   </div>
   <a class="scroll-cue mono" href="#problem">Scroll <span aria-hidden="true">↓</span></a>
@@ -124,7 +153,38 @@
         <li><span class="mono k">13 Nov 2025</span><strong>Rules notified</strong><span>Most duties begin 18 months later.</span></li>
         <li class="soon"><span class="mono k">13 May 2027</span><strong>Erasure duty starts</strong><span>Colleges, and their clubs, must be ready.</span><span class="countdown mono" id="countdown"></span></li>
       </ol>
+      <div class="flip-wrap rv" aria-label="Time left until the erasure duty starts on 13 May 2027">
+        <p class="eyebrow">Until 13 May 2027, India time</p>
+        <div class="flip" id="flip">
+          <div class="flip-u"><b class="flip-n" data-unit="d">190</b><span>days</span></div>
+          <div class="flip-u"><b class="flip-n" data-unit="h">00</b><span>hours</span></div>
+          <div class="flip-u"><b class="flip-n" data-unit="m">00</b><span>minutes</span></div>
+          <div class="flip-u"><b class="flip-n" data-unit="s">00</b><span>seconds</span></div>
+        </div>
+      </div>
       <p class="lede rv">Thavanai helps clubs build the habit now. It is a record-keeping aid, not a compliance certificate.</p>
+    </div>
+    <div class="marquee" aria-label="What the DPDP Act asks of anyone holding personal data">
+      <div class="marquee-track">
+        <ul class="marquee-list">
+          <li><b>Section 4</b> Process only for a lawful purpose</li>
+          <li><b>Section 5</b> Tell people what is collected and why</li>
+          <li><b>Section 6</b> Consent must be free and specific</li>
+          <li><b>Section 8(5)</b> Keep reasonable security safeguards</li>
+          <li><b>Section 8(6)</b> Report a breach</li>
+          <li class="hot"><b>Section 8(7)</b> Erase once the purpose is served</li>
+          <li><b>Section 12</b> A right to correction and erasure</li>
+        </ul>
+        <ul class="marquee-list" aria-hidden="true">
+          <li><b>Section 4</b> Process only for a lawful purpose</li>
+          <li><b>Section 5</b> Tell people what is collected and why</li>
+          <li><b>Section 6</b> Consent must be free and specific</li>
+          <li><b>Section 8(5)</b> Keep reasonable security safeguards</li>
+          <li><b>Section 8(6)</b> Report a breach</li>
+          <li class="hot"><b>Section 8(7)</b> Erase once the purpose is served</li>
+          <li><b>Section 12</b> A right to correction and erasure</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -133,12 +193,40 @@
     <div class="wrap">
       <p class="eyebrow">The life of one collection</p>
       <h2 class="h2 tick">Thavanai gives every collection a due date.</h2>
-      <div class="steps rv">
-        <div class="step"><span class="mono k">25 Sep</span><strong>Record</strong><p>132 team registrations for Hack the Campus are logged — the event, the purpose, the source, which kinds of data and where they are kept.</p></div>
-        <div class="step"><span class="mono k">Rule</span><strong>Due date</strong><p>30 days after the event: delete by 9 November. Nobody types the date — a retention policy works it out.</p></div>
-        <div class="step amber"><span class="mono k">2 Nov</span><strong>Remind</strong><p>The status turns “Due in 7 days” in amber, then “Overdue” in red, and the collection joins the overdue report.</p></div>
-        <div class="step"><span class="mono k">Delete</span><strong>Prove</strong><p>The club records how it was deleted. The log and the status save in one transaction, and the record locks.</p></div>
+      <p class="lede story-lede">Scroll through seven weeks of one real collection from the demo data: Hack the Campus team registrations, Coding Club.</p>
+    </div>
+    <div class="story" id="story">
+      <div class="story-pin">
+        <div class="wrap story-in">
+          <ol class="story-steps" id="storySteps">
+            <li class="on"><span class="mono k">25-09-2026</span><strong>Record</strong><p>132 team registrations are logged: the event, the purpose, the source, which kinds of data and where they are kept.</p></li>
+            <li><span class="mono k">10-10-2026</span><strong>Due date</strong><p>The event happens. The rule is 30 days after the event, so delete by 9 November. Nobody types that date.</p></li>
+            <li class="amber"><span class="mono k">02-11-2026</span><strong>Remind</strong><p>Seven days left. The status turns “Due in 7 days” in amber.</p></li>
+            <li class="red"><span class="mono k">10-11-2026</span><strong>Overdue</strong><p>Past the date. It turns red and joins the overdue report, most overdue first.</p></li>
+            <li><span class="mono k">12-11-2026</span><strong>Delete</strong><p>The club deletes the form responses and records how. The log and the status save in one transaction.</p></li>
+            <li><span class="mono k">Forever</span><strong>Prove</strong><p>The record locks. Four triggers refuse any change, even straight from SQL.</p></li>
+          </ol>
+          <div class="story-stage">
+            <article class="rec glass" id="rec" data-state="active">
+              <div class="rec-top"><span class="mono">Collection #3 · Coding Club</span><span class="pill" id="recPill">Within retention</span></div>
+              <h3 class="rec-h">Hack the Campus team registration</h3>
+              <p class="rec-p">132 people · Name, register no., dept, email, phone*</p>
+              <div class="rec-meter" aria-hidden="true"><i id="recBar"></i></div>
+              <dl class="rec-facts">
+                <div><dt>Today</dt><dd class="mono" id="recToday">25-09-2026</dd></div>
+                <div><dt>Delete by</dt><dd class="mono">09-11-2026</dd></div>
+                <div><dt id="recLeftK">Left</dt><dd class="mono" id="recLeft">45 days</dd></div>
+              </dl>
+              <p class="rec-stamp" id="recStamp" aria-hidden="true">Deleted</p>
+              <pre class="term rec-term" id="recTerm"><span class="p">mysql&gt;</span> UPDATE data_collection SET record_count = 0 WHERE collection_id = 3;
+<span class="e">ERROR 1644 (45000): This collection is marked as deleted and is locked.</span></pre>
+            </article>
+            <div class="story-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
       </div>
+    </div>
+    <div class="wrap">
       <div class="rules rv">
         <div class="glass rule-card">
           <p class="eyebrow">Nobody types the delete-by date</p>
@@ -178,6 +266,18 @@
     </div>
   </section>
 
+  <!-- in numbers -->
+  <section class="stats" aria-label="Thavanai in numbers">
+    <div class="wrap stats-in">
+      <div class="stat glass rv"><b data-count="7">7</b><span>tables</span></div>
+      <div class="stat glass rv"><b data-count="5">5</b><span>CHECK constraints</span></div>
+      <div class="stat glass rv"><b data-count="4">4</b><span>triggers guarding the proof</span></div>
+      <div class="stat glass rv"><b data-count="61">61</b><span>checks, all passing</span></div>
+      <div class="stat glass rv"><b data-count="600000">600,000</b><span>PBKDF2 iterations per password</span></div>
+      <div class="stat glass rv"><b data-count="365">365</b><span>days, the longest anything is kept</span></div>
+    </div>
+  </section>
+
   <!-- screens -->
   <section class="sec" id="inside">
     <div class="wrap">
@@ -206,7 +306,80 @@
         <div><span class="mono">schema.sql</span><strong>MySQL</strong><span>7 tables, 5 CHECK constraints, foreign keys, 4 triggers</span></div>
       </div>
       <div class="er rv">
-        <figure class="glass er-fig"><img src="assets/img/er.png" alt="Entity relationship diagram of the seven tables: club, app_user, event, data_category, data_collection, collection_category and deletion_log" width="1800" height="966" loading="lazy"><figcaption class="mono">Entity relationship diagram</figcaption></figure>
+        <figure class="glass er-fig"><div class="grid-scroll er-scroll"><svg class="er-svg" id="erSvg" viewBox="0 0 1000 610" role="img" aria-labelledby="erTitle">
+<title id="erTitle">Entity relationship diagram of the seven tables. club has many app_user and event rows; event has many data_collection rows; app_user creates data_collection and deletion_log rows; data_collection links to data_category through collection_category; each data_collection has at most one deletion_log row.</title>
+<defs><marker id="mOne" viewBox="0 0 12 12" refX="6" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path class="mk" d="M3 1 V11 M7 1 V11"/></marker>
+<marker id="mMany" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="14" markerHeight="14" orient="auto"><path class="mk" d="M1 7 L13 1 M1 7 L13 7 M1 7 L13 13"/></marker></defs>
+<path class="er-e" data-a="club" data-b="app_user" d="M140 156 V240" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mMany)"/>
+<path class="er-e" data-a="club" data-b="event" d="M250 89 H390" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mMany)"/>
+<path class="er-e" data-a="event" data-b="data_collection" d="M500 156 V230" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mMany)"/>
+<path class="er-e" data-a="app_user" data-b="data_collection" d="M250 320 H390" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mMany)"/>
+<path class="er-e" data-a="data_collection" data-b="collection_category" d="M610 287 H750" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mMany)"/>
+<path class="er-e" data-a="data_category" data-b="collection_category" d="M860 134 V250" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mMany)"/>
+<path class="er-e" data-a="data_collection" data-b="deletion_log" d="M500 466 V524 H250" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mOne)"/>
+<path class="er-e" data-a="app_user" data-b="deletion_log" d="M140 410 V450" pathLength="1" marker-start="url(#mOne)" marker-end="url(#mMany)"/>
+<g class="er-t" data-t="club" transform="translate(30 30)" tabindex="0"><rect class="er-box" width="220" height="126" rx="10"/><path class="er-head" d="M0 10 Q0 0 10 0 H210 Q220 0 220 10 V30 H0 Z"/><text class="er-name" x="12" y="20">club</text>
+<text class="er-col pk" x="12" y="46">club_id</text>
+<text class="er-tag" x="208" y="46" text-anchor="end">PK</text>
+<text class="er-col" x="12" y="68">club_name</text>
+<text class="er-col" x="12" y="90">faculty_incharge</text>
+<text class="er-col" x="12" y="112">contact_email</text>
+</g>
+<g class="er-t" data-t="event" transform="translate(390 30)" tabindex="0"><rect class="er-box" width="220" height="126" rx="10"/><path class="er-head" d="M0 10 Q0 0 10 0 H210 Q220 0 220 10 V30 H0 Z"/><text class="er-name" x="12" y="20">event</text>
+<text class="er-col pk" x="12" y="46">event_id</text>
+<text class="er-tag" x="208" y="46" text-anchor="end">PK</text>
+<text class="er-col fk" x="12" y="68">club_id</text>
+<text class="er-tag" x="208" y="68" text-anchor="end">FK</text>
+<text class="er-col" x="12" y="90">event_name</text>
+<text class="er-col" x="12" y="112">event_date</text>
+</g>
+<g class="er-t" data-t="data_category" transform="translate(750 30)" tabindex="0"><rect class="er-box" width="220" height="104" rx="10"/><path class="er-head" d="M0 10 Q0 0 10 0 H210 Q220 0 220 10 V30 H0 Z"/><text class="er-name" x="12" y="20">data_category</text>
+<text class="er-col pk" x="12" y="46">category_id</text>
+<text class="er-tag" x="208" y="46" text-anchor="end">PK</text>
+<text class="er-col" x="12" y="68">name</text>
+<text class="er-col" x="12" y="90">is_sensitive</text>
+</g>
+<g class="er-t" data-t="app_user" transform="translate(30 240)" tabindex="0"><rect class="er-box" width="220" height="170" rx="10"/><path class="er-head" d="M0 10 Q0 0 10 0 H210 Q220 0 220 10 V30 H0 Z"/><text class="er-name" x="12" y="20">app_user</text>
+<text class="er-col pk" x="12" y="46">user_id</text>
+<text class="er-tag" x="208" y="46" text-anchor="end">PK</text>
+<text class="er-col" x="12" y="68">username</text>
+<text class="er-col" x="12" y="90">password_hash</text>
+<text class="er-col" x="12" y="112">salt</text>
+<text class="er-col" x="12" y="134">role</text>
+<text class="er-col fk" x="12" y="156">club_id</text>
+<text class="er-tag" x="208" y="156" text-anchor="end">FK</text>
+</g>
+<g class="er-t" data-t="data_collection" transform="translate(390 230)" tabindex="0"><rect class="er-box" width="220" height="236" rx="10"/><path class="er-head" d="M0 10 Q0 0 10 0 H210 Q220 0 220 10 V30 H0 Z"/><text class="er-name" x="12" y="20">data_collection</text>
+<text class="er-col pk" x="12" y="46">collection_id</text>
+<text class="er-tag" x="208" y="46" text-anchor="end">PK</text>
+<text class="er-col fk" x="12" y="68">event_id</text>
+<text class="er-tag" x="208" y="68" text-anchor="end">FK</text>
+<text class="er-col" x="12" y="90">purpose</text>
+<text class="er-col" x="12" y="112">record_count</text>
+<text class="er-col" x="12" y="134">collected_on</text>
+<text class="er-col" x="12" y="156">policy_type</text>
+<text class="er-col" x="12" y="178">delete_by</text>
+<text class="er-col" x="12" y="200">status</text>
+<text class="er-col fk" x="12" y="222">created_by</text>
+<text class="er-tag" x="208" y="222" text-anchor="end">FK</text>
+</g>
+<g class="er-t" data-t="collection_category" transform="translate(750 250)" tabindex="0"><rect class="er-box" width="220" height="82" rx="10"/><path class="er-head" d="M0 10 Q0 0 10 0 H210 Q220 0 220 10 V30 H0 Z"/><text class="er-name" x="12" y="20">collection_category</text>
+<text class="er-col pk" x="12" y="46">collection_id</text>
+<text class="er-tag" x="208" y="46" text-anchor="end">PK FK</text>
+<text class="er-col pk" x="12" y="68">category_id</text>
+<text class="er-tag" x="208" y="68" text-anchor="end">PK FK</text>
+</g>
+<g class="er-t" data-t="deletion_log" transform="translate(30 450)" tabindex="0"><rect class="er-box" width="220" height="148" rx="10"/><path class="er-head" d="M0 10 Q0 0 10 0 H210 Q220 0 220 10 V30 H0 Z"/><text class="er-name" x="12" y="20">deletion_log</text>
+<text class="er-col pk" x="12" y="46">log_id</text>
+<text class="er-tag" x="208" y="46" text-anchor="end">PK</text>
+<text class="er-col fk" x="12" y="68">collection_id</text>
+<text class="er-tag" x="208" y="68" text-anchor="end">FK UQ</text>
+<text class="er-col fk" x="12" y="90">deleted_by</text>
+<text class="er-tag" x="208" y="90" text-anchor="end">FK</text>
+<text class="er-col" x="12" y="112">deleted_on</text>
+<text class="er-col" x="12" y="134">method</text>
+</g>
+</svg></div><figcaption class="mono">Entity relationship diagram · hover or tap a table to see its keys</figcaption></figure>
         <div class="er-notes">
           <div><strong>Many-to-many</strong><span>Collections ↔ kinds of data, through <span class="mono">collection_category</span>.</span></div>
           <div><strong>Third normal form</strong><span>A collection stores <span class="mono">event_id</span>, never the club name.</span></div>
@@ -337,6 +510,7 @@ RESULT: 61 passed, 0 failed</pre>
 </footer>
 
 <script src="assets/js/engine.js" integrity="sha384-3D8dNo9qQnMVmAZ3kLku4UPejki+bTEUv4+iHDWS5wwF9+rpNoP//E39a4algmXG"></script>
-<script src="assets/js/site.js" integrity="sha384-fItStufsasPRZH1zFFzCdhBZumuwYhHo+tBJNO1d48spcjtXTamlww18qX8bdnQz"></script>
+<script src="assets/js/site.js" integrity="sha384-ZVRldeLUTybYbq4sYwS25NJCxxdT8eGjHYp8yhNl/6rY+fstXphXysHfSR+ogi5r"></script>
+<script src="assets/js/fx.js" integrity="sha384-cRhUKKtOHTGGyzwUzx0kok7n0SLv28plV6aO2MJRmTa13Z2dXRNDVGtFYHn3qt2Y"></script>
 </body>
 </html>

@@ -8,6 +8,8 @@
 /* ---------- intro (plays once per visit) */
 .intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: var(--night); color: #f3f3ee; transition: clip-path 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0.9s; clip-path: inset(0 0 0 0); }
 .intro.out { clip-path: inset(0 0 100% 0); visibility: hidden; }
+.intro { display: none; }
+html.intro-play .intro { display: grid; }
 html.intro-seen .intro { display: none; }
 .intro-in { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .intro-mark { width: 96px; height: 96px; margin-bottom: 14px; }
@@ -228,6 +230,3 @@ html.intro-seen .intro { display: none; }
 .end-note { margin-top: 60px; max-width: 80ch; color: #94a298; }
 .end-note a { color: #cfe5d6; }
 
-/* reveal: elements are always visible; they only ease in when scrolled to */
-.rv.in { animation: rv-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-@keyframes rv-in { from { transform: translateY(22px); } }

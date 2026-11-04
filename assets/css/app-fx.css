@@ -1,0 +1,46 @@
+/* Thavanai — motion and depth for the live demo and the tests page. Nothing here changes what a screen shows. */
+
+/* loading screen: the tag swings in from depth, glass orbs drift behind it */
+.splash { overflow: hidden; }
+.splash-in { position: relative; z-index: 1; perspective: 900px; }
+@media (prefers-reduced-motion: no-preference) {
+  .splash-mark { transform-style: preserve-3d; animation: tag3d 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) both, tagfloat 4.5s 1.3s ease-in-out infinite; }
+  .splash::before, .splash::after { content: ""; position: absolute; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.16); background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03) 60%); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: orb 10s ease-in-out infinite alternate; }
+  .splash::before { width: 360px; height: 360px; top: 6%; right: 8%; }
+  .splash::after { width: 210px; height: 210px; bottom: 8%; left: 10%; animation-duration: 12s; animation-delay: -4s; }
+}
+@keyframes tag3d { from { opacity: 0; transform: rotateY(-80deg) rotateX(28deg) translateZ(-180px); } to { opacity: 1; transform: none; } }
+@keyframes tagfloat { 50% { transform: translateY(-6px) rotateY(10deg) rotateX(-4deg); } }
+@keyframes orb { to { transform: translate3d(-44px, 34px, 0) scale(1.08); } }
+
+/* top bar: slims down and lifts once the page scrolls */
+.top { transition: padding 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; }
+.top.slim { padding-top: 6px; padding-bottom: 6px; background: color-mix(in srgb, var(--paper) 82%, transparent); box-shadow: 0 14px 30px -24px rgba(0, 0, 0, 0.55); }
+
+/* screens slide in; tables arrive row by row */
+.fx .view > .enter { animation: viewin 0.55s cubic-bezier(0.2, 0.75, 0.2, 1) both; }
+@keyframes viewin { from { opacity: 0; transform: translateY(14px); } }
+.fx tr.rowin { animation: rowin 0.38s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 22ms); }
+@keyframes rowin { from { opacity: 0; transform: translateY(6px); } }
+
+/* glass: lit edge and a light that follows the pointer */
+.win, .act, .tile { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), var(--shadow-soft); }
+.win { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), var(--shadow); }
+.spot { position: relative; }
+.spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(156, 211, 175, 0.18), transparent 50%); opacity: 0; transition: opacity 0.3s; }
+.spot:hover::after { opacity: 1; }
+.act { transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.2s, box-shadow 0.25s; }
+.act:hover { transform: translateY(-3px); }
+
+/* status pills: overdue breathes */
+.fx .pill.overdue::before { animation: pulse-r 1.4s ease-in-out infinite; }
+@keyframes pulse-r { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--red) 25%, transparent); } }
+
+/* proof of deletion: the stamp comes down */
+.fx .modal-win .stamp { animation: slam 0.5s 0.15s cubic-bezier(0.2, 0.7, 0.3, 1.5) both; }
+@keyframes slam { from { opacity: 0; transform: rotate(-6deg) scale(2.4); } to { opacity: 1; transform: rotate(-6deg) scale(1); } }
+.fx .modal-back { animation: fade 0.22s ease both; }
+.fx .modal-win { animation: pop3d 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15) both; transform-origin: 50% 40%; }
+@keyframes pop3d { from { opacity: 0; transform: perspective(900px) rotateX(10deg) translateY(16px) scale(0.96); } }
+
+@media print { .spot::after { display: none; } .top { box-shadow: none; } }

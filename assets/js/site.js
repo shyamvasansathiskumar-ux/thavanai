@@ -15,7 +15,7 @@
       try { sessionStorage.setItem("thv-intro", "1"); } catch (e) { /* fine */ }
       setTimeout(() => { intro.remove(); stamp(); }, 900);
     }, 2200);
-  } else { if (intro) intro.remove(); setTimeout(stamp, 500); }
+  } else { if (intro) intro.remove(); setTimeout(stamp, 1100); }
 
   // hero stamp: the Code Sprint registration's real status today
   function stamp() {
@@ -24,6 +24,13 @@
     const late = D.between(by, today);
     s.textContent = late > 0 ? "Overdue " + late + (late === 1 ? " day" : " days") : late === 0 ? "Due today" : "Due in " + (-late) + " days";
     s.classList.add("on");
+    document.dispatchEvent(new CustomEvent("thv:ready"));
+  }
+  // second hero tag: RoboRace registrations are kept to the end of semester (30-11-2026)
+  const robo = $("#heroRobo");
+  if (robo) {
+    const left = D.between(today, "2026-11-30");
+    robo.textContent = left > 7 ? "Delete by 30-11-2026 · " + left + " days left" : left >= 0 ? "Due in " + left + (left === 1 ? " day" : " days") : "Overdue " + (-left) + " days";
   }
 
   // nav
@@ -80,25 +87,4 @@
   }
   gi.addEventListener("input", guard); guard();
 
-  // reveal
-  if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
-    document.querySelectorAll(".rv").forEach((el) => { if (el.getBoundingClientRect().top > innerHeight) io.observe(el); });
-  }
-
-  // hero label follows the pointer, a little
-  const art = $("#heroArt");
-  if (art && matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const labels = art.querySelectorAll(".label");
-    art.addEventListener("pointermove", (e) => {
-      const r = art.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-      labels.forEach((l, i) => {
-        const depth = [10, 6, 3][i] || 3;
-        const base = l.classList.contains("front") ? "rotate(-3deg)" : l.classList.contains("back1") ? "rotate(4deg) translate(12px, 2px)" : "rotate(9deg) translate(26px, 8px)";
-        l.style.transform = base + " translate(" + (x * depth) + "px," + (y * depth) + "px) rotateY(" + (x * 6) + "deg) rotateX(" + (-y * 6) + "deg)";
-      });
-    });
-    art.addEventListener("pointerleave", () => labels.forEach((l) => { l.style.transform = ""; }));
-  }
 })();
