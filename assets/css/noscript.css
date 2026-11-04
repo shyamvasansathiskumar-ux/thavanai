@@ -1,3 +1,3 @@
 /* Without JavaScript the demo cannot start: hide the loading screen so the message underneath is readable. */
-.splash { display: none !important; }
+#splash { display: none !important; }
 .noscript { display: block; max-width: 640px; margin: 80px auto; padding: 0 20px; font-size: 18px; }

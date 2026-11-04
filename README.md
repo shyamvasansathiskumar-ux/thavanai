@@ -21,6 +21,7 @@ rebuilt to run entirely in the browser, so it can be tried without installing an
 - **Queries:** every query is a prepared statement with bound values.
 - **Roles:** coordinators see and change only their own club. This is checked in the data layer on every read and write.
 - **No personal data:** text that looks like a phone number, email, register number or ID number is refused.
+- **Plain text only:** every free-text field refuses HTML or script tags, `javascript:` links, event handlers and encoded markup, and drops invisible characters that can disguise text. Nothing is stripped silently; the user is told what was refused. SQL needs no stripping because every query binds its values.
 - **Page security:**
   - A strict Content Security Policy: no inline or third-party scripts, and no network calls.
   - Subresource Integrity on every script and stylesheet.
@@ -33,6 +34,9 @@ Demo logins (demo data only, published with the project): `admin / Admin@2026`, 
 ## Run locally
 Any static server works, for example `python3 -m http.server` in this folder, then open http://localhost:8000.
 Opening the files directly (`file://`) will not work, because the browser blocks loading the database engine that way.
+
+## Build
+`assets/js/scene3d.js` (the 3D objects) is built from `src/scene3d.js` with `tools/build-scene.sh` (three.js 0.187 and esbuild). Everything else is plain files.
 
 ## Team
 Shyam Sathiskumar · Krithika Sree V R · Skandesh Saran S G

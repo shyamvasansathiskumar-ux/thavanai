@@ -7,34 +7,39 @@
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#2c5e3f">
-<title>Thavanai — Live Demo</title>
+<title>Thavanai live demo</title>
 <meta name="description" content="The Thavanai retention register running in your browser: log in, record a collection, watch its delete-by date, mark it deleted and see the database lock the proof.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<noscript><link rel="stylesheet" href="assets/css/noscript.css" integrity="sha384-VPuf59l8b0B+sKD282s4DFbQi++N9dIPwCNt9u8yjiBLFCqPORd8T4LvDFM+a9OB"></noscript>
-<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-XcFqErXl2ZKaRCZYYI8YxkO/LBzgYRqp9U7mMKsZpS729oPXr+tMGZW6s00ydNFs">
+<noscript><link rel="stylesheet" href="assets/css/noscript.css" integrity="sha384-oJTjbKc4KF0CSVX/+iuNmO/ha5+51lJGvNUZzS8pEa45BTed0AuYLbMpWz516MLz"></noscript>
+<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-Kad74ibDetjZPhsBB1Ji31JKZc2p61B2S17PGq2RvEiLuoewlF10UBqFTaaaZy8B">
 <link rel="stylesheet" href="assets/css/app.css" integrity="sha384-nE3K0GvJj3SV2ZjDD3LAkYXVTsK6BtsXSMeeVy0YRkMkoXdR/YJdarj33dl316Q/">
-<link rel="stylesheet" href="assets/css/app-fx.css" integrity="sha384-3FqbOguwb/zssrXEMpC3s5bF/vtV7sN47KHgKcsnuCpEtzb7NgjSABiKd0GzbZtB">
+<link rel="stylesheet" href="assets/css/app-fx.css" integrity="sha384-4Z7uVX+BYYxZEe0bSzllulFDCajlng0gTJQSmoiNIaNgaeFNwtaZ7CO6LAySRRDU">
+<link rel="stylesheet" href="assets/css/loader.css" integrity="sha384-a7gD2N38++oFuIK6Qz+KBtcKm9YT/AcjjTo/GaiPUt5qPx5bRMP2pcj4B7nkNTav">
 <script src="assets/js/guard.js" integrity="sha384-UGHvYior/XbFNX6KcgeIudAtk2i77NsYqFVesXb/4KCG66o6C7jhHVMN8LN9oMUw"></script>
 </head>
-<body class="app">
+<body class="app" data-cursor="ring">
 <div class="atmos" aria-hidden="true"><i></i><i></i><i></i></div>
 
-<div id="splash" class="splash" role="status" aria-live="polite">
-  <div class="splash-in">
-    <svg class="splash-mark" viewBox="0 0 120 120" aria-hidden="true">
-      <path class="tag" d="M22 30 H78 L100 52 V96 H22 Z" />
-      <circle class="hole" cx="84" cy="44" r="5" />
-      <rect class="bar b1" x="34" y="56" width="44" height="7" rx="2" />
-      <rect class="bar b2" x="34" y="69" width="32" height="7" rx="2" />
-      <rect class="bar b3" x="34" y="82" width="20" height="7" rx="2" />
-    </svg>
-    <p class="ta splash-ta">தவணை</p>
-    <h1 class="splash-word">Thavanai</h1>
-    <p class="splash-sub">Personal data retention register for college clubs</p>
-    <p class="splash-foot mono">Record what you collect. Delete it on time. Keep the proof.</p>
-    <div class="splash-bar" aria-hidden="true"><span></span></div>
-    <p class="sr-only">Loading the demo</p>
+<div id="splash" class="loader" role="status" aria-live="polite">
+  <div class="ld-panel ld-top"></div><div class="ld-panel ld-bot"></div>
+  <div class="ld-in">
+    <div class="ld-corner"><span class="ld-brand"><b>தவணை</b> Thavanai</span><span class="hide-s">Live demo · runs in this tab</span></div>
+    <div class="ld-center">
+      <div class="ld-floor" aria-hidden="true"></div>
+      <div class="ld-obj">
+        <i class="ld-shadow"></i>
+        <svg class="ld-fallback" viewBox="0 0 120 120" aria-hidden="true"><path class="tag" d="M22 30 H78 L100 52 V96 H22 Z" /><circle class="hole" cx="84" cy="44" r="5" /><rect class="bar" x="34" y="56" width="44" height="7" rx="2" /><rect class="bar" x="34" y="69" width="32" height="7" rx="2" /><rect class="bar" x="34" y="82" width="20" height="7" rx="2" /></svg>
+        <canvas class="ld-gl"></canvas>
+        <span class="ld-stamp">DELETE BY</span>
+        <div class="ld-orbit" aria-hidden="true"><span>CHECK ≤ 365</span><span>4 TRIGGERS</span><span>PBKDF2 600k</span></div>
+      </div>
+      <p class="ld-ta">தவணை</p>
+      <p class="ld-word">means due date</p>
+    </div>
+    <div class="ld-foot"><ol class="ld-log" aria-hidden="true"></ol><span class="ld-tag">Record · Delete · Prove</span><span class="ld-num"><b>0</b><i>%</i></span><span class="ld-status">Fetching the database engine</span></div>
   </div>
+  <div class="ld-bar"><i></i></div>
+  <p class="sr-only">Loading the demo</p>
 </div>
 
 <header class="top" id="top" hidden>
@@ -61,9 +66,13 @@
 <noscript><p class="noscript">The demo needs JavaScript. The project site works without it.</p></noscript>
 
 <script src="vendor/sql-wasm.js" integrity="sha384-1fHJox8K973mCCD3PTAOc0ljrAGXD2VeK8zf+vNIdx55pWPULNlpxKMkU8bF4nUd"></script>
-<script src="assets/js/engine.js" integrity="sha384-3D8dNo9qQnMVmAZ3kLku4UPejki+bTEUv4+iHDWS5wwF9+rpNoP//E39a4algmXG"></script>
+<script src="assets/js/engine.js" integrity="sha384-6VyPszY/N1yhjqrYFZmbMtmR+cekjylLjuvuI97Mkr0jMPce6rZJJdqZaRqyTflZ"></script>
+<script src="assets/js/clay3d.js" integrity="sha384-mcf9tpFLgazQVcxiabZH8syb/qddyFOVhKyxvYIQZeql2MIYOwqT0S3FbyIqLvRE"></script>
+<script src="assets/js/loader.js" integrity="sha384-VttZGeVWtL9aq9zhLdHJKWUt0J4mL68qfLphAH4ixj8V1BtjS4JpLnGEDwscWckQ"></script>
 <script src="assets/js/seed.js" integrity="sha384-k0JLMx3OZddWFwba7hoi0/AZmFzVykXgOZQdosB2BE8lKmdaTb9s9GuF1/3vKUU9"></script>
-<script src="assets/js/app.js" integrity="sha384-DQaBsU5QTsde5OSdJqYo+T3rHE7IQvzPPvIofTUAt46p+1Cf3jKtaUt1U4C///AP"></script>
-<script src="assets/js/app-fx.js" integrity="sha384-Mn1X3QMm3kq1hEppQqTkUAtuPGMaRtDHfGSj4b8iF4FBQJqDf8xxNh1AH8zMWuV+"></script>
+<script src="assets/js/app.js" integrity="sha384-onddFqRvqIEJepmrAnzA9F8jUVIhZ6DJq1BZ6BOf2glgPQ+GXpKFOo7hNOuA4LuG"></script>
+<script src="assets/js/app-fx.js" integrity="sha384-W8mYABTBYlhVcgAHB8tgG2xQ59G98rbUN1p70ljHNpXEwgr5tDyFULEyrP4boTv8"></script>
+<script src="assets/js/bg.js" integrity="sha384-rQSH+GQWGJqVEN+FAwYdX5BfTF1MwBKv0r/XacNlOj/4UsHISSAChW7iqIj1/VPx"></script>
+<script src="assets/js/cursor.js" integrity="sha384-U9oDgyWzjD8gtbGl5lyaIg0kWe6+InZGWZqIbKpXkif5flpg/xvrpZ3cqm3pDNZn"></script>
 </body>
 </html>

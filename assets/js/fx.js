@@ -45,6 +45,7 @@
     const on = (name) => {
       er.classList.add("hover");
       $$(".er-t", er).forEach((t) => t.classList.toggle("hot", t.dataset.t === name));
+      $$(".er-dot", er).forEach((d) => d.classList.toggle("hot", d.dataset.a === name || d.dataset.b === name));
       edges.forEach((e) => {
         const hit = e.dataset.a === name || e.dataset.b === name;
         e.classList.toggle("hot", hit);
@@ -98,6 +99,52 @@
     S.dots.forEach((d, i) => d.classList.toggle("on", i <= stage));
   }
 
+  // ------------------------------------------------------------------ the 3D padlock: drag it, try to open it, the triggers refuse
+  const lockCanvas = $("#lockGl");
+  if (lockCanvas && T.Clay3D) {
+    const box = lockCanvas.closest(".lockbox");
+    const lock = T.Clay3D(lockCanvas, { shape: "lock", interactive: true, spin: 0.45, body: "#4f8f66", trim: "#e9ece6", rim: "#d9f0e1" });
+    if (lock) box.classList.add("gl3d");
+    const tries = [
+      ["UPDATE deletion_log SET deleted_on = '2026-01-01' WHERE collection_id = 2;", "ERROR 1644 (45000): Deletion records cannot be edited."],
+      ["DELETE FROM deletion_log WHERE collection_id = 2;", "ERROR 1644 (45000): Deletion records cannot be removed."],
+      ["UPDATE data_collection SET record_count = 0 WHERE collection_id = 2;", "ERROR 1644 (45000): This collection is marked as deleted and is locked."],
+      ["DELETE FROM data_collection WHERE collection_id = 2;", "ERROR 1644 (45000): A deleted collection is proof of deletion and cannot be removed."]
+    ];
+    let n = 0;
+    const term = $("#lockTerm"), btn = $("#lockBtn"), count = $("#lockCount");
+    const attempt = () => {
+      const [sql, err] = tries[n % tries.length]; n++;
+      term.textContent = "";
+      const pr = document.createElement("span"); pr.className = "p"; pr.textContent = "mysql> ";
+      const er = document.createElement("span"); er.className = "e"; er.textContent = err;
+      term.append(pr, document.createTextNode(sql + "\n"), er);
+      if (!reduce) { term.classList.remove("shake"); void term.offsetWidth; term.classList.add("shake"); }
+      count.textContent = Math.min(n, 4) + " of 4 tried" + (n >= 4 ? " · every one refused" : "");
+      if (lock) { lock.lift(0.45); setTimeout(() => lock.lift(0), 170); }
+    };
+    if (btn) btn.addEventListener("click", attempt);
+    if (lock) lock.onTap = attempt;
+  }
+
+  // ------------------------------------------------------------------ rolling labels on links and buttons (pointer devices)
+  if (fine) {
+    const roll = (el) => {
+      if (el.querySelector(".roll")) return;
+      const tn = Array.from(el.childNodes).find((x) => x.nodeType === 3 && x.textContent.trim());
+      if (!tn) return;
+      const raw = tn.textContent, text = raw.trim();
+      const w = document.createElement("span"); w.className = "roll"; w.dataset.t = text;
+      const inner = document.createElement("span"); inner.textContent = text; w.append(inner);
+      const parts = [];
+      if (/^\s/.test(raw)) parts.push(document.createTextNode(" "));
+      parts.push(w);
+      if (/\s$/.test(raw)) parts.push(document.createTextNode(" "));
+      tn.replaceWith(...parts);
+    };
+    $$(".nav-links a, a.btn, button.btn").forEach(roll);
+  }
+
   if (reduce) {
     // no motion: the story shows its first state, the stats show their real numbers, the clock still ticks
     if (S) storyAt(0);
@@ -129,24 +176,30 @@
     walk(el);
     el.classList.add("split");
   }
-  $$(".h2, .band-h, .end-h").forEach(splitWords);
-
+  const G = window.gsap, ST = window.ScrollTrigger, SPL = window.SplitText;
+  const useG = !!(G && ST && SPL);
+  const whenRevealed = (fn) => { if (root.dataset.revealed) fn(); else document.addEventListener("thv:reveal", fn, { once: true }); };
   const hero = $(".hero");
   const heroH = $(".hero-h");
-  if (heroH) {
-    const word = heroH.textContent.trim();
-    heroH.setAttribute("aria-label", word);
-    heroH.textContent = "";
-    Array.from(word).forEach((ch, i) => {
-      const c = document.createElement("span"); c.className = "c"; c.textContent = ch; c.style.setProperty("--i", i);
-      c.setAttribute("aria-hidden", "true");
-      heroH.append(c);
-    });
+  if (useG) {
+    root.classList.add("gs");
+    G.registerPlugin(ST, SPL);
+    $$(".oop, .team, .layers, .tests, #shots").forEach((el) => el.classList.remove("rv"));
+  } else {
+    $$(".h2, .band-h, .end-h").forEach(splitWords);
+    if (heroH) {
+      const word = heroH.textContent.trim();
+      heroH.setAttribute("aria-label", word);
+      heroH.textContent = "";
+      Array.from(word).forEach((ch, i) => {
+        const c = document.createElement("span"); c.className = "c"; c.textContent = ch; c.style.setProperty("--i", i);
+        c.setAttribute("aria-hidden", "true");
+        heroH.append(c);
+      });
+    }
+    $$(".hero-copy > *").forEach((el, i) => el.style.setProperty("--d", i));
+    whenRevealed(() => setTimeout(() => hero && hero.classList.add("go"), 60));
   }
-  $$(".hero-copy > *").forEach((el, i) => el.style.setProperty("--d", i));
-  const intro = $("#intro");
-  const firstVisit = intro && !root.classList.contains("intro-seen");
-  setTimeout(() => hero && hero.classList.add("go"), firstVisit ? 2250 : 60);
 
   // ------------------------------------------------------------------ reveals and count-ups
   const countUp = (b) => {
@@ -303,5 +356,174 @@
       });
       b.addEventListener("pointerleave", () => { b.style.transform = ""; });
     });
+  }
+  // ================================================================== GSAP scenes (ScrollTrigger + SplitText)
+  if (useG) {
+    const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+
+    // hero: a sharp letter-by-letter fade-up as the page opens; Tamil rises as whole words so its vowel signs stay joined
+    let heroChars = [], subWords = [];
+    if (heroH) { heroChars = SPL.create(heroH, { type: "chars", charsClass: "ch" }).chars; G.set(heroChars, { yPercent: 105, opacity: 0 }); }
+    const sub = $(".hero-sub");
+    if (sub) { G.set(sub, { opacity: 1, y: 0 }); subWords = SPL.create(sub, { type: "words", wordsClass: "sw" }).words; G.set(subWords, { y: 14, opacity: 0 }); }
+    const heroBits = $$(".hero-copy > :not(.hero-h):not(.hero-sub)");
+    G.set(heroBits, { y: 18, opacity: 0 });
+    if (art) G.set(art, { y: 60, scale: 0.94, opacity: 0 });
+    whenRevealed(() => {
+      const tl = G.timeline();
+      tl.to(heroChars, { yPercent: 0, opacity: 1, duration: 0.62, ease: "power4.out", stagger: 0.045 }, 0.05)
+        .to(subWords, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out", stagger: 0.03 }, 0.3)
+        .to(heroBits, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", stagger: 0.07 }, 0.18)
+        .to(art, { y: 0, scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" }, 0.25);
+      setTimeout(() => ST.refresh(), 400);
+    });
+    G.to(".hero-copy", { yPercent: -12, opacity: 0.3, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+
+    // headings: on entry every letter shuffles through terminal glyphs and locks in as it rises; widths are held so lines never jump
+    const MATRIX = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/<>=+";
+    const shuffle = (chars, step) => {
+      const t0 = performance.now();
+      const items = chars.map((c, i) => ({ c, final: c.textContent, w: c.getBoundingClientRect().width, start: i * step, end: i * step + 360 }));
+      items.forEach((it) => { if (it.final.trim()) { it.c.style.width = it.w + "px"; it.c.style.textAlign = "center"; } });
+      const tick = (now) => {
+        const t = now - t0; let busy = false;
+        for (const it of items) {
+          if (!it.final.trim() || it.done) continue;
+          if (t >= it.end) { it.c.textContent = it.final; it.c.style.width = ""; it.c.style.textAlign = ""; it.done = true; continue; }
+          busy = true;
+          if (t >= it.start - 140) it.c.textContent = MATRIX[(Math.random() * MATRIX.length) | 0];
+        }
+        if (busy) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    fontsReady.then(() => {
+      $$(".h2, .band-h, .end-h").forEach((el) => {
+        SPL.create(el, {
+          type: "words,chars", mask: "words", wordsClass: "wd", charsClass: "ch", autoSplit: true,
+          onSplit(self) {
+            el._chars = self.chars;
+            const tw = G.from(self.chars, { yPercent: 110, opacity: 0, duration: 0.7, ease: "power3.out", stagger: 0.016, paused: !el._played });
+            if (el._played) { tw.progress(1); return tw; }
+            ST.create({ trigger: el, start: "top 88%", once: true, onEnter: () => { el._played = true; el.classList.add("in"); tw.play(); shuffle(self.chars, 16); } });
+            return tw;
+          }
+        });
+        if (fine) el.addEventListener("pointerenter", () => {
+          if (el._chars && el._played) G.to(el._chars, { keyframes: { y: [0, -7, 0] }, duration: 0.55, ease: "sine.inOut", stagger: 0.012, overwrite: false });
+        });
+      });
+      ST.refresh();
+    });
+
+    // labels decode from random glyphs when they arrive, and again on hover
+    const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%+";
+    const scramble = (el) => {
+      if (el._scr) return;
+      const final = el.textContent; el._scr = true;
+      const t0 = performance.now(), dur = 700;
+      const step = (now) => {
+        const k = (now - t0) / dur;
+        let out = "";
+        for (let i = 0; i < final.length; i++) { const c = final[i]; out += (c === " " || i < k * final.length) ? c : GLYPHS[(Math.random() * GLYPHS.length) | 0]; }
+        el.textContent = k < 1 ? out : final;
+        if (k < 1) requestAnimationFrame(step); else el._scr = false;
+      };
+      requestAnimationFrame(step);
+    };
+    $$(".eyebrow").forEach((el) => {
+      if (el.children.length || !el.textContent.trim()) return;
+      el.setAttribute("aria-label", el.textContent.trim());
+      ST.create({ trigger: el, start: "top 92%", once: true, onEnter: () => scramble(el) });
+      if (fine) el.addEventListener("pointerenter", () => scramble(el));
+    });
+
+    // clay objects drift and turn with the scroll
+    $$(".clay:not(.lock-fallback)").forEach((el) => {
+      G.fromTo(el, { y: 80, rotate: -10 }, { y: -100, rotate: 10, ease: "none", scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: 1.2 } });
+    });
+
+    // schema: connector lines are drawn by the scroll itself; once drawn, keys flow along them as small dots
+    if (er) {
+      er.classList.add("in", "scrub");
+      const NS = "http://www.w3.org/2000/svg";
+      const lines = $$(".er-e", er);
+      const firstTable = $(".er-t", er);
+      lines.forEach((e, i) => {
+        e.id = "erE" + i;
+        const dot = document.createElementNS(NS, "circle");
+        dot.setAttribute("r", "3.4"); dot.setAttribute("class", "er-dot");
+        dot.dataset.a = e.dataset.a; dot.dataset.b = e.dataset.b;
+        const mo = document.createElementNS(NS, "animateMotion");
+        mo.setAttribute("dur", (2.4 + (i % 4) * 0.35).toFixed(2) + "s"); mo.setAttribute("repeatCount", "indefinite"); mo.setAttribute("begin", (i * 0.27).toFixed(2) + "s");
+        const mp = document.createElementNS(NS, "mpath"); mp.setAttribute("href", "#" + e.id);
+        mo.append(mp); dot.append(mo);
+        er.insertBefore(dot, firstTable);
+      });
+      G.fromTo(lines, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: "none", stagger: 0.18,
+        scrollTrigger: { trigger: er, start: "top 85%", end: "center 40%", scrub: 0.6, onUpdate: (self) => er.classList.toggle("flow", self.progress > 0.97) } });
+      G.from($$(".er-t", er), { opacity: 0, duration: 0.6, ease: "power2.out", stagger: 0.07, clearProps: "opacity", scrollTrigger: { trigger: er, start: "top 85%", once: true } });
+    }
+
+    // the green band opens out of a rounded card
+    const band = $("#decision");
+    if (band) G.fromTo(band, { clipPath: "inset(6% 4% round 44px)" }, { clipPath: "inset(0% 0% round 0px)", ease: "none", scrollTrigger: { trigger: band, start: "top bottom", end: "top 25%", scrub: true } });
+
+    // the law timeline draws as it scrolls in
+    $$(".timeline").forEach((tl) => G.fromTo(tl, { "--tl": 0 }, { "--tl": 1, ease: "none", scrollTrigger: { trigger: tl, start: "top 88%", end: "top 50%", scrub: true } }));
+
+    // the test terminal prints line by line
+    const termEl = $("#tests .big-term");
+    if (termEl) {
+      const nodes = Array.from(termEl.childNodes); termEl.textContent = "";
+      let line = document.createElement("span"); line.className = "ln";
+      const push = () => { termEl.append(line); line = document.createElement("span"); line.className = "ln"; };
+      nodes.forEach((nd) => {
+        if (nd.nodeType === 3) nd.textContent.split("\n").forEach((part, i) => { if (i > 0) push(); if (part) line.append(document.createTextNode(part)); });
+        else line.append(nd);
+      });
+      push();
+      G.from($$(".ln", termEl), { opacity: 0, x: -16, duration: 0.4, stagger: 0.13, ease: "power2.out", scrollTrigger: { trigger: termEl, start: "top 80%", once: true } });
+    }
+
+    // groups arrive in a stagger
+    const batchIn = (sel, from, trig) => {
+      const els = $$(sel); if (!els.length) return;
+      G.from(els, Object.assign({ opacity: 0, duration: 0.95, ease: "expo.out", stagger: 0.08, scrollTrigger: { trigger: trig, start: "top 84%", once: true } }, from));
+    };
+    batchIn(".layers > div", { x: -56 }, ".layers");
+    batchIn(".oop .o", { y: 70, rotationX: -38, transformPerspective: 900, stagger: { each: 0.06, grid: "auto" } }, ".oop");
+    batchIn(".team .person", { y: 60, scale: 0.95, stagger: 0.12 }, ".team");
+    batchIn("#problem tbody tr", { y: 18, stagger: 0.08 }, "#problem table");
+    batchIn(".adds li", { x: 34, stagger: 0.07 }, ".adds");
+    batchIn(".tally li", { x: 24, stagger: 0.05 }, ".tally");
+
+    // the law strip runs faster while you scroll
+    const mt = $(".marquee-track");
+    if (mt) {
+      const run = G.to(mt, { xPercent: -50, duration: 46, ease: "none", repeat: -1 });
+      ST.create({ trigger: ".marquee", start: "top bottom", end: "bottom top", onUpdate: (self) => { run.timeScale(clamp(1 + Math.abs(self.getVelocity()) / 220, 1, 7)); } });
+      G.ticker.add(() => { const ts = run.timeScale(); if (ts > 1.001) run.timeScale(ts + (1 - ts) * 0.04); });
+      const mq = $(".marquee");
+      mq.addEventListener("pointerenter", () => G.to(run, { timeScale: 0.2, duration: 0.5 }));
+      mq.addEventListener("pointerleave", () => G.to(run, { timeScale: 1, duration: 0.5 }));
+    }
+
+    // the desktop screens scroll sideways while the section is pinned (wide screens)
+    const mm = G.matchMedia();
+    mm.add("(min-width: 1000px)", () => {
+      const sec = $("#inside"), pin = $("#shotsPin"), track = $("#shots"), hb = $("#hsBar");
+      if (!sec || !pin || !track) return;
+      sec.classList.add("hs");
+      const dist = () => Math.max(0, track.scrollWidth - innerWidth);
+      G.to(track, {
+        x: () => -dist(), ease: "none",
+        scrollTrigger: { trigger: pin, start: "top top", end: () => "+=" + dist(), pin: true, scrub: 0.8, invalidateOnRefresh: true, anticipatePin: 1,
+          onUpdate: (self) => { if (hb) hb.style.transform = "scaleX(" + self.progress.toFixed(4) + ")"; } }
+      });
+      return () => sec.classList.remove("hs");
+    });
+
+    addEventListener("load", () => ST.refresh(), { once: true });
   }
 })();

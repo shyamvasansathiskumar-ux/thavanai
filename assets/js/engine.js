@@ -21,8 +21,33 @@
     constructor(message) { super(message); this.name = "DatabaseError"; }
   }
 
+  /** Every free-text field passes through here before any other rule.
+      Invisible characters are removed (they are never typed on purpose and can disguise text);
+      anything that looks like markup or script is refused with a message, never silently changed.
+      SQL needs no stripping: every query binds its values, so text can never become SQL. */
+  const INVISIBLE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u00AD\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF]/g;
+  const MARKUP = [
+    /<\/?[a-z!?]/i,
+    /(java|vb)script\s*:/i,
+    /data\s*:\s*text\/html/i,
+    /\bon[a-z]{3,}\s*=/i,
+    /&(#x?[0-9a-f]+|lt|gt|quot|apos);?/i,
+    /\$\{|\{\{/
+  ];
+  const TextGuard = {
+    clean(value) {
+      if (value == null) return "";
+      return String(value).normalize("NFC").replace(INVISIBLE, "").replace(/[\r\n\t]+/g, " ").replace(/\s{2,}/g, " ").trim();
+    },
+    check(field, text) {
+      if (text == null || text === "") return;
+      for (const re of MARKUP) if (re.test(text)) throw new ValidationError(field + " looks like it contains code or markup. Use plain words only.");
+    }
+  };
+
   function requireText(value, field, min, max) {
-    const v = value == null ? "" : String(value).trim();
+    const v = TextGuard.clean(value);
+    TextGuard.check(field, v);
     if (!v) throw new ValidationError(field + " is required.");
     if (v.length < min) throw new ValidationError(field + " must be at least " + min + " characters.");
     if (v.length > max) throw new ValidationError(field + " can be at most " + max + " characters.");
@@ -278,7 +303,8 @@
     if (r.deletedOn < collectedOn) throw new ValidationError("Deleted on cannot be before the data was collected.");
     if (!r.method || !DeletionMethod[r.method]) throw new ValidationError("Choose how the data was deleted.");
     if (r.remarks != null) {
-      r.remarks = String(r.remarks).trim();
+      r.remarks = TextGuard.clean(r.remarks);
+      TextGuard.check("Remarks", r.remarks);
       if (r.remarks.length > 200) throw new ValidationError("Remarks can be at most 200 characters.");
       if (!r.remarks) r.remarks = null;
       PersonalDataGuard.check("Remarks", r.remarks);
@@ -743,17 +769,39 @@ INSERT INTO data_category (name, is_sensitive) VALUES
 
   // ------------------------------------------------------------------ loading the database engine, checked byte for byte
   const WASM_SHA384 = "R/MwdqDq6/VfWyY+p8u2RAFr+3gVOgzxeJqDeDxCnpQaVqOc9tEFLu4wdQfoDpb5";
-  async function loadSql(base) {
+  const WASM_BYTES = 652953;
+  /** Downloads the SQLite engine, checks its SHA-384 fingerprint, then starts it.
+      onProgress(fraction, step) is optional and only reports; it cannot change what is loaded. */
+  async function loadSql(base, onProgress) {
+    const report = (f, step) => { if (typeof onProgress === "function") { try { onProgress(f, step); } catch (e) { /* display only */ } } };
+    report(0, "download");
     const res = await fetch((base || "") + "vendor/sql-wasm.wasm", { credentials: "omit", cache: "force-cache" });
     if (!res.ok) throw new Error("could not download the database engine");
-    const bytes = new Uint8Array(await res.arrayBuffer());
+    let bytes;
+    if (res.body && res.body.getReader) {
+      const reader = res.body.getReader(), parts = [];
+      let got = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        parts.push(value); got += value.length;
+        report(Math.min(1, got / WASM_BYTES) * 0.8, "download");
+      }
+      bytes = new Uint8Array(got);
+      let at = 0;
+      for (const p of parts) { bytes.set(p, at); at += p.length; }
+    } else bytes = new Uint8Array(await res.arrayBuffer());
+    report(0.82, "verify");
     const digest = b64(new Uint8Array(await crypto.subtle.digest("SHA-384", bytes)));
     if (digest !== WASM_SHA384) throw new Error("the database engine failed its integrity check");
-    return global.initSqlJs({ wasmBinary: bytes });
+    report(0.9, "start");
+    const SQL = await global.initSqlJs({ wasmBinary: bytes });
+    report(1, "ready");
+    return SQL;
   }
 
   global.Thavanai = {
-    loadSql,
+    loadSql, TextGuard, WASM_SHA384,
     ValidationError, DatabaseError, Dates, Role, Source, PolicyType, DeletionMethod, CollectionStatus,
     DUE_SOON_DAYS, MAX_RETENTION_DAYS, MAX_DAYS_FROM_EVENT, PersonalDataGuard, PasswordHasher,
     User, Admin, Coordinator, RetentionPolicy, FixedDaysPolicy, AfterEventPolicy, EndOfSemesterPolicy,

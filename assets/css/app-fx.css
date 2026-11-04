@@ -44,3 +44,32 @@
 @keyframes pop3d { from { opacity: 0; transform: perspective(900px) rotateX(10deg) translateY(16px) scale(0.96); } }
 
 @media print { .spot::after { display: none; } .top { box-shadow: none; } }
+
+/* ---------- layer 2: clay actions, toast micro-interactions, rolling labels */
+:root { --clay-hi: rgba(255, 255, 255, 0.6); --clay-lo: rgba(15, 36, 24, 0.12); --clay-drop: rgba(15, 36, 24, 0.42); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --clay-hi: rgba(255, 255, 255, 0.07); --clay-lo: rgba(0, 0, 0, 0.35); --clay-drop: rgba(0, 0, 0, 0.6); } }
+:root[data-theme="dark"] { --clay-hi: rgba(255, 255, 255, 0.07); --clay-lo: rgba(0, 0, 0, 0.35); --clay-drop: rgba(0, 0, 0, 0.6); }
+.acts .act { border-radius: 22px; border-color: transparent; background: linear-gradient(160deg, var(--card-solid), color-mix(in srgb, var(--paper-2) 80%, var(--card-solid))); box-shadow: inset 6px 8px 14px var(--clay-hi), inset -8px -10px 18px var(--clay-lo), 0 18px 34px -18px var(--clay-drop); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.3), box-shadow 0.3s, border-color 0.2s; }
+.acts .act.primary { background: linear-gradient(160deg, #4f8f66, #2c5e3f); box-shadow: inset 6px 8px 14px rgba(255, 255, 255, 0.22), inset -8px -10px 18px rgba(0, 0, 0, 0.22), 0 18px 34px -16px rgba(44, 94, 63, 0.65); }
+.acts .act:hover { transform: translateY(-4px) scale(1.012); border-color: transparent; }
+.acts .act:active { transform: translateY(1px) scale(0.98); box-shadow: inset 8px 10px 18px var(--clay-lo), inset -4px -6px 10px var(--clay-hi), 0 8px 16px -12px var(--clay-drop); }
+.tile { box-shadow: inset 5px 6px 12px var(--clay-hi), inset -6px -8px 14px var(--clay-lo), 0 14px 28px -18px var(--clay-drop); border-radius: 20px; }
+.btn:active:not([disabled]) { transform: translateY(0) scale(0.97); }
+
+.toast-in { display: flex; align-items: center; gap: 10px; }
+.tx-ico { width: 22px; height: 22px; flex: none; overflow: visible; }
+.tx-ico .ring { fill: rgba(156, 211, 175, 0.18); stroke: #9cd3af; stroke-width: 1.6; }
+.tx-ico .tick { fill: none; stroke: #9cd3af; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 16; stroke-dashoffset: 16; animation: tx-draw 0.45s 0.12s cubic-bezier(0.6, 0, 0.2, 1) forwards; }
+.tx-ico.err .ring { fill: rgba(255, 255, 255, 0.16); stroke: #fff; }
+.tx-ico.err .tick { stroke: #fff; }
+.tx-ico .body { fill: #9cd3af; }
+.tx-ico .shackle { fill: none; stroke: #f3f3ee; stroke-width: 2.4; stroke-linecap: round; transform: translateY(-4px); animation: tx-snap 0.5s 0.15s cubic-bezier(0.3, 0, 0.3, 1.6) forwards; }
+.tx-ico .key { fill: #173a26; }
+@keyframes tx-draw { to { stroke-dashoffset: 0; } }
+@keyframes tx-snap { 60% { transform: translateY(1px); } to { transform: none; } }
+
+.roll { position: relative; display: inline-flex; flex-direction: column; height: 1.25em; line-height: 1.25; overflow: hidden; vertical-align: middle; }
+.roll > span { display: block; transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1); }
+.roll::after { content: attr(data-t); content: attr(data-t) / ""; display: block; transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1); }
+a:hover > .roll > span, a:hover > .roll::after, button:hover > .roll > span, button:hover > .roll::after { transform: translateY(-100%); }
+@media (prefers-reduced-motion: reduce) { .tx-ico .tick { stroke-dashoffset: 0; animation: none; } .tx-ico .shackle { transform: none; animation: none; } }

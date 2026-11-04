@@ -1,0 +1,9 @@
+GSAP 3.15.1 (gsap core, ScrollTrigger, SplitText)
+Copyright GreenSock. All rights reserved.
+
+Used under the GSAP Standard "No Charge" License:
+https://gsap.com/standard-license
+
+The files in vendor/gsap.min.js, vendor/ScrollTrigger.min.js and vendor/SplitText.min.js
+are unmodified copies from the gsap package on npm (version 3.15.1). They keep their
+original copyright headers.

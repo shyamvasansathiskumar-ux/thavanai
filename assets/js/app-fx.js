@@ -6,6 +6,27 @@
   const onScroll = () => { if (top) top.classList.toggle("slim", scrollY > 8); };
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
+
+  // toasts get a small animated icon: a tick, a cross, or a padlock snapping shut when a record locks
+  const NS = "http://www.w3.org/2000/svg";
+  const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  function icon(kind) {
+    const svg = mk("svg", { viewBox: "0 0 24 24", class: "tx-ico " + kind, "aria-hidden": "true", focusable: "false" });
+    if (kind === "lock") {
+      svg.append(mk("path", { class: "shackle", d: "M8 11V8.2a4 4 0 0 1 8 0V11" }), mk("rect", { class: "body", x: "4.5", y: "10.5", width: "15", height: "10.5", rx: "3" }), mk("circle", { class: "key", cx: "12", cy: "15.4", r: "1.6" }));
+    } else {
+      svg.append(mk("circle", { class: "ring", cx: "12", cy: "12", r: "10" }), mk("path", { class: "tick", d: kind === "err" ? "M8.5 8.5l7 7M15.5 8.5l-7 7" : "M7.2 12.4l3.2 3.2 6.4-6.6" }));
+    }
+    return svg;
+  }
+  const toastEl = document.getElementById("toast");
+  if (toastEl) new MutationObserver(() => {
+    const t = toastEl.querySelector(".toast-in");
+    if (!t || t.querySelector(".tx-ico")) return;
+    const kind = t.classList.contains("err") ? "err" : /locked/i.test(t.textContent) ? "lock" : "ok";
+    t.prepend(icon(kind));
+  }).observe(toastEl, { childList: true });
+
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   document.documentElement.classList.add("fx");
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -35,6 +56,24 @@
     });
     if (fine) document.querySelectorAll(".win:not(.spot), .act:not(.spot), .tile:not(.spot)").forEach((el) => el.classList.add("spot"));
   }
+
+  // menu labels roll over on hover (the menu is rebuilt on every screen)
+  if (fine) {
+    const roll = (el) => {
+      if (el.querySelector(".roll")) return;
+      const tn = Array.from(el.childNodes).find((x) => x.nodeType === 3 && x.textContent.trim());
+      if (!tn) return;
+      const text = tn.textContent.trim();
+      const w = document.createElement("span"); w.className = "roll"; w.dataset.t = text;
+      const inner = document.createElement("span"); inner.textContent = text; w.append(inner);
+      tn.replaceWith(w);
+    };
+    const menu = document.getElementById("menu");
+    const wrapMenu = () => menu.querySelectorAll("a").forEach(roll);
+    if (menu) { new MutationObserver(wrapMenu).observe(menu, { childList: true }); wrapMenu(); }
+    document.querySelectorAll(".foot-links a, .top a:not(.brand)").forEach(roll);
+  }
+
   let queued = false;
   const queue = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; process(); }); };
   new MutationObserver(queue).observe(view, { childList: true, subtree: true });

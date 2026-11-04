@@ -5,17 +5,33 @@
   const $ = (s) => document.querySelector(s);
   const today = D.today();
 
-  // opening (once per visit)
-  const intro = $("#intro");
-  if (intro && !document.documentElement.classList.contains("intro-seen")) {
+  // opening (once per visit): the loader shows what is really loading, then splits open
+  const root = document.documentElement;
+  const loaderEl = $("#loader");
+  const reveal = () => { root.dataset.revealed = "1"; document.dispatchEvent(new CustomEvent("thv:reveal")); };
+  if (loaderEl && root.classList.contains("intro-play") && T.Loader) {
     document.body.style.overflow = "hidden";
-    setTimeout(() => {
-      intro.classList.add("out");
+    const L = T.Loader(loaderEl, { min: 2000 });
+    L.set(0.12, "Loading the typefaces");
+    const fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    fonts.then(() => { L.set(0.55, "Typefaces ready · preparing the register"); L.log("fonts", "Bricolage Grotesque · Public Sans · Martian Mono · Noto Sans Tamil", true); });
+    const loaded = new Promise((r) => { if (document.readyState === "complete") r(); else addEventListener("load", r, { once: true }); });
+    loaded.then(() => {
+      L.set(0.85, "Starting the retention rules");
+      L.log("integrity", document.querySelectorAll("script[integrity], link[integrity]").length + " files checked against their SRI hashes", true);
+      L.log("rules", "3 retention policies · never more than " + T.MAX_RETENTION_DAYS + " days", true);
+      L.log("guard", "phone · email · ID · register no. · markup", true);
+    });
+    Promise.all([fonts, loaded]).then(() => L.done("Ready · delete it on time")).then(() => {
       document.body.style.overflow = "";
       try { sessionStorage.setItem("thv-intro", "1"); } catch (e) { /* fine */ }
-      setTimeout(() => { intro.remove(); stamp(); }, 900);
-    }, 2200);
-  } else { if (intro) intro.remove(); setTimeout(stamp, 1100); }
+      setTimeout(stamp, 1000);
+    });
+  } else {
+    if (loaderEl) loaderEl.remove();
+    reveal();
+    setTimeout(stamp, 1100);
+  }
 
   // hero stamp: the Code Sprint registration's real status today
   function stamp() {
@@ -80,10 +96,12 @@
   const gi = $("#guardIn"), go = $("#guardOut");
   function guard() {
     try {
-      T.PersonalDataGuard.check("Purpose", gi.value);
+      const v = T.TextGuard.clean(gi.value);
+      T.TextGuard.check("Purpose", v);
+      T.PersonalDataGuard.check("Purpose", v);
       go.className = "guard-out good";
       go.textContent = gi.value.trim() ? "Accepted. This describes the data without copying it." : "Type something.";
-    } catch (e) { go.className = "guard-out bad"; go.textContent = "Refused — " + e.message; }
+    } catch (e) { go.className = "guard-out bad"; go.textContent = "Refused: " + e.message; }
   }
   gi.addEventListener("input", guard); guard();
 

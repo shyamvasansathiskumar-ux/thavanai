@@ -6,15 +6,15 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
-<title>Thavanai — The 61 Checks</title>
+<title>Thavanai test run</title>
 <meta name="description" content="Run Thavanai's 61 loophole tests live: SQL injection, club scoping, input rules, retention policies, locked proof of deletion, triggers and constraints.">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-XcFqErXl2ZKaRCZYYI8YxkO/LBzgYRqp9U7mMKsZpS729oPXr+tMGZW6s00ydNFs">
+<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-Kad74ibDetjZPhsBB1Ji31JKZc2p61B2S17PGq2RvEiLuoewlF10UBqFTaaaZy8B">
 <link rel="stylesheet" href="assets/css/app.css" integrity="sha384-nE3K0GvJj3SV2ZjDD3LAkYXVTsK6BtsXSMeeVy0YRkMkoXdR/YJdarj33dl316Q/">
-<link rel="stylesheet" href="assets/css/app-fx.css" integrity="sha384-3FqbOguwb/zssrXEMpC3s5bF/vtV7sN47KHgKcsnuCpEtzb7NgjSABiKd0GzbZtB">
+<link rel="stylesheet" href="assets/css/app-fx.css" integrity="sha384-4Z7uVX+BYYxZEe0bSzllulFDCajlng0gTJQSmoiNIaNgaeFNwtaZ7CO6LAySRRDU">
 <script src="assets/js/guard.js" integrity="sha384-UGHvYior/XbFNX6KcgeIudAtk2i77NsYqFVesXb/4KCG66o6C7jhHVMN8LN9oMUw"></script>
 </head>
-<body class="app">
+<body class="app" data-cursor="ring">
 <div class="atmos" aria-hidden="true"><i></i><i></i><i></i></div>
 <header class="top">
   <a class="brand" href="index.html" aria-label="Thavanai project site">
@@ -29,7 +29,7 @@
       <div><p class="eyebrow">SelfTest, ported line by line</p><h1 class="page-h big">We tried to break it 61 ways</h1></div>
       <button class="btn primary" id="run" type="button">Run the 61 checks</button>
     </div>
-    <p class="lead narrowp">Each check builds a fresh database with the demo data, then does something that must work — or tries something the application or the database must refuse. Your demo database is not touched.</p>
+    <p class="lead narrowp">Each check builds a fresh database with the demo data, then does something that must work, or tries something the application or the database must refuse. Your demo database is not touched.</p>
     <div class="test-groups" id="groups"></div>
     <section class="win">
       <div class="win-bar"><span class="win-title">$ java thavanai.test.SelfTest</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
@@ -39,10 +39,12 @@
 </main>
 <footer class="foot"><span>Runs entirely in this tab. Passwords are hashed with PBKDF2 600,000 times for every login check, so it takes a few seconds.</span><span class="foot-links"><a href="index.html">Project site</a><a href="app.html">Live demo</a></span></footer>
 <script src="vendor/sql-wasm.js" integrity="sha384-1fHJox8K973mCCD3PTAOc0ljrAGXD2VeK8zf+vNIdx55pWPULNlpxKMkU8bF4nUd"></script>
-<script src="assets/js/engine.js" integrity="sha384-3D8dNo9qQnMVmAZ3kLku4UPejki+bTEUv4+iHDWS5wwF9+rpNoP//E39a4algmXG"></script>
+<script src="assets/js/engine.js" integrity="sha384-6VyPszY/N1yhjqrYFZmbMtmR+cekjylLjuvuI97Mkr0jMPce6rZJJdqZaRqyTflZ"></script>
 <script src="assets/js/seed.js" integrity="sha384-k0JLMx3OZddWFwba7hoi0/AZmFzVykXgOZQdosB2BE8lKmdaTb9s9GuF1/3vKUU9"></script>
 <script src="assets/js/selftest.js" integrity="sha384-kQBWibtd42yMYS0u+A6L2NGY43vtJ/2NrDemCXYYHL9BHYD9nki54G4g5d3QiLDI"></script>
 <script src="assets/js/tests.js" integrity="sha384-HURoU9Q38oRK23H13UJzs67e5oIMUF+keOpNwXZA3gW3ai58lrKXkPDGvhijLYK0"></script>
-<script src="assets/js/app-fx.js" integrity="sha384-Mn1X3QMm3kq1hEppQqTkUAtuPGMaRtDHfGSj4b8iF4FBQJqDf8xxNh1AH8zMWuV+"></script>
+<script src="assets/js/app-fx.js" integrity="sha384-W8mYABTBYlhVcgAHB8tgG2xQ59G98rbUN1p70ljHNpXEwgr5tDyFULEyrP4boTv8"></script>
+<script src="assets/js/bg.js" integrity="sha384-rQSH+GQWGJqVEN+FAwYdX5BfTF1MwBKv0r/XacNlOj/4UsHISSAChW7iqIj1/VPx"></script>
+<script src="assets/js/cursor.js" integrity="sha384-U9oDgyWzjD8gtbGl5lyaIg0kWe6+InZGWZqIbKpXkif5flpg/xvrpZ3cqm3pDNZn"></script>
 </body>
 </html>

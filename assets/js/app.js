@@ -302,7 +302,7 @@
     if (c.OVERDUE) {
       const od = new T.CollectionDao(db, user, today()).search(null, "OVERDUE", null);
       const people = od.reduce((a, d) => a + d.recordCount, 0);
-      extra.push(h("a", { class: "alert", href: "#/overdue" }, h("strong", { text: od.length + (od.length === 1 ? " collection is" : " collections are") + " overdue" }), " — holding personal data of " + people + " people. Open the report →"));
+      extra.push(h("a", { class: "alert", href: "#/overdue" }, h("strong", { text: od.length + (od.length === 1 ? " collection is" : " collections are") + " overdue" }), ", holding personal data of " + people + " people. Open the report →"));
     }
     const sens = new T.ReportDao(db, user, today()).sensitivePerClub();
     const sensCard = sens.length ? win("Sensitive data still held", h("p", { class: "small muted", text: "People whose phone number, photo, address, ID or payment details each club still holds (active collections only)." }),
@@ -388,7 +388,7 @@
       win("Thavanai · View collections",
         h("div", { class: "filters" }, clubSel ? field("Club", clubSel) : null, field("Status", statusSel), field("Search", text)),
         count, tableHost,
-        h("p", { class: "small muted", text: "Select a row, then choose an action. Status is worked out from today's date every time — it is never stored." }),
+        h("p", { class: "small muted", text: "Select a row, then choose an action. Status is worked out from today's date every time. It is never stored." }),
         h("div", { class: "actions left" }, btns.update, btns.del, btns.proof, btns.remove, btns.print)));
   }
 
@@ -400,7 +400,7 @@
     if (id) {
       existing = dao.findById(id);
       if (!existing) return h("div", { class: "center" }, win("Thavanai · Update collection", msgBox("err", "This record does not exist or is not in your club."), h("a", { class: "btn", href: "#/collections", text: "Back to collections" })));
-      if (existing.deleted) return h("div", { class: "center" }, win("Thavanai · Update collection #" + id, msgBox("err", "This collection is marked as deleted and is locked."), h("p", { class: "small", text: "Proof of deletion cannot be edited — in the app, or straight from the database." }), h("a", { class: "btn", href: "#/collections", text: "Back to collections" })));
+      if (existing.deleted) return h("div", { class: "center" }, win("Thavanai · Update collection #" + id, msgBox("err", "This collection is marked as deleted and is locked."), h("p", { class: "small", text: "Proof of deletion cannot be edited, in the app or straight from the database." }), h("a", { class: "btn", href: "#/collections", text: "Back to collections" })));
     }
     if (!events.length) return h("div", { class: "center" }, win("Thavanai · Add collection", msgBox("warn", "No events yet. Add an event first from the Events screen."), h("a", { class: "btn primary", href: "#/clubs", text: "Open events" })));
 
@@ -515,7 +515,7 @@
         h("dt", { text: "Data collected" }), h("dd", { text: d.categoryNames }),
         h("dt", { text: "Deleted on" }), h("dd", { class: "mono", text: D.format(r.deletedOn) }),
         h("dt", { text: "How" }), h("dd", { text: T.DeletionMethod[r.method].label }),
-        h("dt", { text: "Remarks" }), h("dd", { text: r.remarks || "—" }),
+        h("dt", { text: "Remarks" }), h("dd", { text: r.remarks || "None" }),
         h("dt", { text: "Recorded by" }), h("dd", { class: "mono", text: r.deletedBy }),
         h("dt", { text: "Logged at" }), h("dd", { class: "mono", text: r.loggedAt + " UTC" })),
       h("p", { class: "small muted", text: "Four database triggers refuse any change to this record or its proof, even from the database console." })
@@ -577,7 +577,7 @@
     const out = h("div");
     const list = dao.findAll();
     const used = new Set(db.all("SELECT DISTINCT event_id FROM data_collection").map((r) => r.event_id));
-    const rows = selectable(list.map((e) => ({ item: e, tr: h("tr", null, h("td", { text: e.clubName }), h("td", { text: e.name }), h("td", { class: "mono", text: D.format(e.date) }), h("td", { class: "num", text: used.has(e.id) ? "yes" : "—" })) })),
+    const rows = selectable(list.map((e) => ({ item: e, tr: h("tr", null, h("td", { text: e.clubName }), h("td", { text: e.name }), h("td", { class: "mono", text: D.format(e.date) }), h("td", { class: "num", text: used.has(e.id) ? "yes" : "no" })) })),
       (e) => { sel = e; clubSel.value = e.clubId; name.value = e.name; date.value = e.date; out.replaceChildren(); upd.disabled = rem.disabled = false; });
     const clear = () => { sel = null; name.value = ""; date.value = ""; upd.disabled = rem.disabled = true; out.replaceChildren(); };
     const doIt = (fn, okText) => { out.replaceChildren(); try { fn(); toast(okText); render(); } catch (e) { out.append(msgBox("err", errorText(e))); } };
@@ -686,7 +686,7 @@
     box.addEventListener("keydown", (e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); run.click(); } });
     return h("div", { class: "stack" },
       h("div", { class: "page-row" }, h("h1", { class: "page-h", text: "Database console" })),
-      h("p", { class: "lead narrowp", text: "This talks to the database directly, skipping every Java rule — like opening MySQL Workbench. It runs as thavanai_app, which can only SELECT, INSERT, UPDATE and DELETE. Try to change the proof of deletion: the triggers refuse." }),
+      h("p", { class: "lead narrowp", text: "This talks to the database directly, skipping every Java rule, like opening MySQL Workbench. It runs as thavanai_app, which can only SELECT, INSERT, UPDATE and DELETE. Try to change the proof of deletion: the triggers refuse." }),
       win("thavanai_app@localhost · thavanai",
         h("div", { class: "chips" }, examples.map(([l, s]) => h("button", { class: "chip", type: "button", onclick: () => { box.value = s; box.focus(); } }, h("span", { text: l })))),
         field("SQL", box, "One statement. Ctrl/⌘ + Enter runs it."), h("div", { class: "actions left" }, run), out));
@@ -696,7 +696,7 @@
   function StartChoice() {
     const demo = h("button", { class: "choice glass primary", type: "button" },
       h("span", { class: "eyebrow", text: "Recommended" }), h("strong", { text: "Load the demo data" }),
-      h("span", { text: "4 clubs, 4 coordinators, 9 events and 12 collections — 3 already deleted. The same data as the project's DemoData tool and the slides." }));
+      h("span", { text: "4 clubs, 4 coordinators, 9 events and 12 collections, 3 of them already deleted. The same data as the project's DemoData tool and the slides." }));
     const fresh = h("button", { class: "choice glass", type: "button" },
       h("span", { class: "eyebrow", text: "First run" }), h("strong", { text: "Start with an empty database" }),
       h("span", { text: "See the first-run setup: you create the admin account yourself, because there is no default password." }));
@@ -707,7 +707,7 @@
     view.replaceChildren(h("div", { class: "start" },
       h("p", { class: "eyebrow", text: "Live demo · runs entirely in your browser" }),
       h("h1", { class: "page-h big", text: "How do you want to start?" }),
-      h("p", { class: "lead narrowp", text: "Thavanai's database — tables, CHECK constraints and the four triggers — is built in this tab. Nothing leaves your device." }),
+      h("p", { class: "lead narrowp", text: "Thavanai's database, with its tables, CHECK constraints and four triggers, is built in this tab. Nothing leaves your device." }),
       h("div", { class: "choices" }, demo, fresh)));
   }
 
@@ -721,16 +721,29 @@
 
   async function boot() {
     const splash = $("#splash");
-    const minShow = new Promise((r) => setTimeout(r, matchMedia("(prefers-reduced-motion: reduce)").matches ? 300 : 2500));
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const L = T.Loader && splash && splash.classList.contains("loader") ? T.Loader(splash, { min: 1800 }) : null;
+    const say = (f, text) => { if (L) L.set(f, text); };
+    const minShow = new Promise((r) => setTimeout(r, L ? 0 : (reduce ? 300 : 2500)));
     let failed = null;
     try {
-      SQL = await T.loadSql();
+      const log = (k, t, ok) => { if (L) L.log(k, t, ok); };
+      say(0.02, "Fetching the database engine");
+      log("GET", "vendor/sql-wasm.wasm");
+      SQL = await T.loadSql("", (f, step) => {
+        if (step === "download") say(f * 1.05, "Fetching the database engine · " + Math.min(638, Math.round(f / 0.8 * 638)) + " of 638 KB");
+        else if (step === "verify") { say(0.87, "Checking its SHA-384 fingerprint"); log("received", "638 KB", true); }
+        else if (step === "start") { say(0.92, "Starting SQLite in this tab"); log("SHA-384", T.WASM_SHA384.slice(0, 16) + "… matches", true); }
+      });
+      log("SQLite", "running in this tab, nothing sent anywhere", true);
+      say(0.95, "Opening the database saved in this browser");
       const saved = await Store.get();
+      log("IndexedDB", saved ? "found the database saved in this browser" : "no saved database yet", true);
       if (saved) { try { attach(new T.Database(SQL, saved)); } catch (e) { await Store.clear(); } }
     } catch (e) { failed = e; }
     await minShow;
-    splash.classList.add("done");
-    setTimeout(() => splash.remove(), 700);
+    if (L) await L.done(failed ? "Could not start" : db ? "Your database is ready" : "Ready");
+    else if (splash) { splash.classList.add("done"); setTimeout(() => splash.remove(), 700); }
     if (failed) {
       view.replaceChildren(h("div", { class: "center" }, win("Thavanai", msgBox("err", "This browser could not start the database (" + (failed.message || failed) + "). Try a recent Chrome, Edge, Firefox or Safari."))));
       $("#top").hidden = false;
