@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'self'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#2c5e3f">
+<title>Thavanai — Live Demo</title>
+<meta name="description" content="The Thavanai retention register running in your browser: log in, record a collection, watch its delete-by date, mark it deleted and see the database lock the proof.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-Mf1oFjIJ6hLTl528oOY0fd4qyjCVRIctCUfSfc1TVsNchydVcp3LKysylEeDY0I8">
+<link rel="stylesheet" href="assets/css/app.css" integrity="sha384-nE3K0GvJj3SV2ZjDD3LAkYXVTsK6BtsXSMeeVy0YRkMkoXdR/YJdarj33dl316Q/">
+<script src="assets/js/guard.js" integrity="sha384-UGHvYior/XbFNX6KcgeIudAtk2i77NsYqFVesXb/4KCG66o6C7jhHVMN8LN9oMUw"></script>
+</head>
+<body class="app">
+<div class="atmos" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<div id="splash" class="splash" role="status" aria-live="polite">
+  <div class="splash-in">
+    <svg class="splash-mark" viewBox="0 0 120 120" aria-hidden="true">
+      <path class="tag" d="M22 30 H78 L100 52 V96 H22 Z" />
+      <circle class="hole" cx="84" cy="44" r="5" />
+      <rect class="bar b1" x="34" y="56" width="44" height="7" rx="2" />
+      <rect class="bar b2" x="34" y="69" width="32" height="7" rx="2" />
+      <rect class="bar b3" x="34" y="82" width="20" height="7" rx="2" />
+    </svg>
+    <p class="ta splash-ta">தவணை</p>
+    <h1 class="splash-word">Thavanai</h1>
+    <p class="splash-sub">Personal data retention register for college clubs</p>
+    <p class="splash-foot mono">Record what you collect. Delete it on time. Keep the proof.</p>
+    <div class="splash-bar" aria-hidden="true"><span></span></div>
+    <p class="sr-only">Loading the demo</p>
+  </div>
+</div>
+
+<header class="top" id="top" hidden>
+  <a class="brand" href="index.html" aria-label="Thavanai project site">
+    <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M22 30 H78 L100 52 V96 H22 Z"/><circle cx="84" cy="44" r="5"/><rect x="34" y="56" width="44" height="7" rx="2"/><rect x="34" y="69" width="32" height="7" rx="2"/></svg>
+    <span><b class="ta">தவணை</b> Thavanai</span>
+  </a>
+  <nav class="menu" id="menu" aria-label="App"></nav>
+  <div class="top-right">
+    <span class="today mono" id="today"></span>
+    <button class="btn ghost icon" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="menu">☰</button>
+  </div>
+</header>
+
+<main id="view" class="view" tabindex="-1"></main>
+
+<footer class="foot" id="foot" hidden>
+  <span>Demo data is stored only in this browser. Nothing is sent anywhere.</span>
+  <span class="foot-links"><a href="index.html">Project site</a><a href="tests.html">Run the 61 checks</a><button class="linkish" id="resetBtn" type="button">Reset the demo</button></span>
+</footer>
+
+<div id="modal-root"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<noscript><p class="noscript">The demo needs JavaScript. The project site works without it.</p></noscript>
+
+<script src="vendor/sql-wasm.js" integrity="sha384-1fHJox8K973mCCD3PTAOc0ljrAGXD2VeK8zf+vNIdx55pWPULNlpxKMkU8bF4nUd"></script>
+<script src="assets/js/engine.js" integrity="sha384-3D8dNo9qQnMVmAZ3kLku4UPejki+bTEUv4+iHDWS5wwF9+rpNoP//E39a4algmXG"></script>
+<script src="assets/js/seed.js" integrity="sha384-k0JLMx3OZddWFwba7hoi0/AZmFzVykXgOZQdosB2BE8lKmdaTb9s9GuF1/3vKUU9"></script>
+<script src="assets/js/app.js" integrity="sha384-DQaBsU5QTsde5OSdJqYo+T3rHE7IQvzPPvIofTUAt46p+1Cf3jKtaUt1U4C///AP"></script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#2c5e3f">
+<title>Thavanai — Personal Data Retention Register</title>
+<meta name="description" content="Thavanai (தவணை, Tamil for due date) helps college clubs record the personal data they collect, delete it on time and keep proof. Java, Swing, JDBC and MySQL — with a live demo that runs in your browser.">
+<meta property="og:title" content="Thavanai — personal data retention register for college clubs">
+<meta property="og:description" content="Record what you collect. Delete it on time. Keep the proof. OOP + DBMS project, Rajalakshmi Engineering College.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://shyamvasansathiskumar-ux.github.io/thavanai/assets/img/og.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/base.css" integrity="sha384-Mf1oFjIJ6hLTl528oOY0fd4qyjCVRIctCUfSfc1TVsNchydVcp3LKysylEeDY0I8">
+<link rel="stylesheet" href="assets/css/site.css" integrity="sha384-taOp5Yt0M/0GNAFofk0Yh6Wfee06FzqgRtsD0MX5A/KcSOfi8piU1DGLfBYl53Zg">
+<script src="assets/js/guard.js" integrity="sha384-UGHvYior/XbFNX6KcgeIudAtk2i77NsYqFVesXb/4KCG66o6C7jhHVMN8LN9oMUw"></script>
+<script src="assets/js/intro.js" integrity="sha384-50mHlIoOiatuygraJZ4O8bGI2BgQOf17iD5tLPlvYrQdqtkc/z7sbKfyAi4s6zaS"></script>
+</head>
+<body>
+<div class="atmos" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<!-- opening: the label draws itself, the date is stamped -->
+<div id="intro" class="intro" aria-hidden="true">
+  <div class="intro-in">
+    <svg class="intro-mark" viewBox="0 0 120 120">
+      <path class="tag" d="M22 30 H78 L100 52 V96 H22 Z" />
+      <circle class="hole" cx="84" cy="44" r="5" />
+      <rect class="bar b1" x="34" y="56" width="44" height="7" rx="2" />
+      <rect class="bar b2" x="34" y="69" width="32" height="7" rx="2" />
+      <rect class="bar b3" x="34" y="82" width="20" height="7" rx="2" />
+    </svg>
+    <p class="intro-ta ta">தவணை</p>
+    <p class="intro-en">means <em>due date</em></p>
+    <span class="intro-stamp">DELETE BY</span>
+  </div>
+</div>
+
+<nav class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="Thavanai, back to top">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M22 30 H78 L100 52 V96 H22 Z"/><circle cx="84" cy="44" r="5"/><rect x="34" y="56" width="44" height="7" rx="2"/><rect x="34" y="69" width="32" height="7" rx="2"/></svg>
+      <span><b class="ta">தவணை</b> Thavanai</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#problem">Problem</a>
+      <a href="#how">How it works</a>
+      <a href="#inside">Inside</a>
+      <a href="#security">Security</a>
+      <a href="#tests">Tests</a>
+      <a href="#team">Team</a>
+      <button class="theme" id="theme" type="button" aria-label="Switch light or dark theme"><span aria-hidden="true">◐</span></button>
+      <a class="btn primary" href="app.html">Open the live demo</a>
+    </div>
+    <button class="btn ghost burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="eyebrow">OOP + DBMS project · CSE · Rajalakshmi Engineering College · Nov 2026</p>
+      <p class="hero-ta ta">தவணை</p>
+      <h1 class="hero-h">Thavanai</h1>
+      <p class="hero-sub">A personal data retention register for college clubs.</p>
+      <p class="hero-line">Record what you collect. <span>Delete it on time.</span> <span>Keep the proof.</span></p>
+      <div class="hero-cta">
+        <a class="btn primary big" href="app.html">Open the live demo <span aria-hidden="true">→</span></a>
+        <a class="btn big" href="tests.html">Run the 61 checks</a>
+      </div>
+      <p class="hero-team">Shyam Sathiskumar · Krithika Sree V R · Skandesh Saran S G</p>
+    </div>
+    <div class="hero-art" id="heroArt" aria-label="An example data collection label">
+      <div class="label back2" aria-hidden="true"></div>
+      <div class="label back1" aria-hidden="true"></div>
+      <article class="label front">
+        <p class="label-k mono">Collection #1 · Coding Club</p>
+        <h2 class="label-h">Code Sprint 2026 registration</h2>
+        <p class="label-p">214 people</p>
+        <p class="label-p">Name, register no., dept, email, phone</p>
+        <p class="label-d mono">Delete by 21-09-2026</p>
+        <p class="label-stamp" id="heroStamp">Overdue</p>
+      </article>
+    </div>
+  </div>
+  <a class="scroll-cue mono" href="#problem">Scroll <span aria-hidden="true">↓</span></a>
+</header>
+
+<main>
+  <!-- the problem -->
+  <section class="sec" id="problem">
+    <div class="wrap">
+      <p class="eyebrow">The problem</p>
+      <h2 class="h2 tick">One club. One semester. <span class="hl">640 records</span> of personal data.</h2>
+      <div class="glass table-card rv">
+        <div class="grid-scroll">
+          <table class="t">
+            <caption class="sr-only">What one club collected in one semester</caption>
+            <thead><tr><th>Event</th><th>What they collected</th><th class="num">People</th><th>Collected</th></tr></thead>
+            <tbody>
+              <tr><td>Code Sprint</td><td>Registration: name, phone, email</td><td class="num">214</td><td class="mono">10-08-2026</td></tr>
+              <tr><td>Code Sprint</td><td>Certificate list</td><td class="num">186</td><td class="mono">23-08-2026</td></tr>
+              <tr><td>Hack the Campus</td><td>Team registration</td><td class="num">132</td><td class="mono">25-09-2026</td></tr>
+              <tr><td>Hack the Campus</td><td>Prize money: bank or UPI details</td><td class="num">12</td><td class="mono">11-10-2026</td></tr>
+              <tr><td>Git Workshop</td><td>Seat booking</td><td class="num">96</td><td class="mono">02-11-2026</td></tr>
+            </tbody>
+            <tfoot><tr><td colspan="2">Coding Club, from our demo data</td><td class="num strong">640</td><td></td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+      <p class="lede rv">Without a register, nobody knows this list exists. The forms stay open in Drive and WhatsApp, and the next batch inherits all of it.</p>
+    </div>
+  </section>
+
+  <!-- the law -->
+  <section class="sec sage" id="law">
+    <div class="wrap">
+      <p class="eyebrow">The law</p>
+      <h2 class="h2 tick">India's privacy law now expects that data to be deleted.</h2>
+      <ol class="timeline rv">
+        <li><span class="mono k">2023</span><strong>DPDP Act passed</strong><span>Section 8(7): erase personal data once its purpose is served.</span></li>
+        <li><span class="mono k">13 Nov 2025</span><strong>Rules notified</strong><span>Most duties begin 18 months later.</span></li>
+        <li class="soon"><span class="mono k">13 May 2027</span><strong>Erasure duty starts</strong><span>Colleges, and their clubs, must be ready.</span><span class="countdown mono" id="countdown"></span></li>
+      </ol>
+      <p class="lede rv">Thavanai helps clubs build the habit now. It is a record-keeping aid, not a compliance certificate.</p>
+    </div>
+  </section>
+
+  <!-- how it works -->
+  <section class="sec" id="how">
+    <div class="wrap">
+      <p class="eyebrow">The life of one collection</p>
+      <h2 class="h2 tick">Thavanai gives every collection a due date.</h2>
+      <div class="steps rv">
+        <div class="step"><span class="mono k">25 Sep</span><strong>Record</strong><p>132 team registrations for Hack the Campus are logged — the event, the purpose, the source, which kinds of data and where they are kept.</p></div>
+        <div class="step"><span class="mono k">Rule</span><strong>Due date</strong><p>30 days after the event: delete by 9 November. Nobody types the date — a retention policy works it out.</p></div>
+        <div class="step amber"><span class="mono k">2 Nov</span><strong>Remind</strong><p>The status turns “Due in 7 days” in amber, then “Overdue” in red, and the collection joins the overdue report.</p></div>
+        <div class="step"><span class="mono k">Delete</span><strong>Prove</strong><p>The club records how it was deleted. The log and the status save in one transaction, and the record locks.</p></div>
+      </div>
+      <div class="rules rv">
+        <div class="glass rule-card">
+          <p class="eyebrow">Nobody types the delete-by date</p>
+          <table class="t compact">
+            <thead><tr><th>Rule</th><th>Delete by</th></tr></thead>
+            <tbody><tr><td>Fixed days</td><td>collected on + N days</td></tr><tr><td>After the event</td><td>event date + N days</td></tr><tr><td>End of semester</td><td>31 May or 30 November</td></tr></tbody>
+          </table>
+          <p class="small">Never more than 365 days — checked in Java and again by the database. Sensitive data, marked *, shows a warning.</p>
+        </div>
+        <div class="glass rule-card calc" id="calc">
+          <p class="eyebrow">Try it</p>
+          <div class="calc-grid">
+            <label>Event date <input type="date" id="cEvent" value="2026-10-10"></label>
+            <label>Collected on <input type="date" id="cColl" value="2026-09-25"></label>
+            <label>Policy
+              <select id="cPol"><option value="AFTER_EVENT">Days after the event</option><option value="FIXED_DAYS">Days after collection</option><option value="END_OF_SEMESTER">End of semester</option></select>
+            </label>
+            <label>Days <input type="number" id="cDays" value="30" min="0" max="365"></label>
+          </div>
+          <p class="calc-out" id="cOut" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the one design decision -->
+  <section class="band" id="decision">
+    <div class="wrap">
+      <p class="eyebrow light">The one design decision</p>
+      <h2 class="band-h">Thavanai never stores anyone's personal data.</h2>
+      <p class="band-p">It stores the label, not what is in the box: what kind of data, how many people, where it is kept. Text that looks like a phone number, email, register number or ID number is refused.</p>
+      <div class="guard glass-dark rv">
+        <label for="guardIn" class="mono">Type into “Purpose” — try a phone number</label>
+        <input id="guardIn" type="text" autocomplete="off" spellcheck="false" maxlength="200" value="Call 98765 43210 for seat queries">
+        <p id="guardOut" class="guard-out" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- screens -->
+  <section class="sec" id="inside">
+    <div class="wrap">
+      <p class="eyebrow">The desktop app, and the same app in your browser</p>
+      <h2 class="h2 tick">Eight screens. Every one of them runs on this site.</h2>
+      <p class="lede">The Java Swing application is what we built and submitted. The live demo is the same set of rules and screens, rebuilt so anyone can try it without installing Java or MySQL.</p>
+      <div class="shots rv">
+        <figure class="shot wide"><img src="assets/img/desktop/05_home_admin.png" alt="Home screen of the desktop app: 4 within retention, 2 due in 7 days, 3 overdue, 3 deleted" width="900" height="490" loading="lazy"><figcaption><strong>Home</strong> — what needs attention: within retention, due in 7 days, overdue, deleted.</figcaption></figure>
+        <figure class="shot"><img src="assets/img/desktop/10_add_collection.png" alt="Add collection form with a live delete-by preview" width="688" height="621" loading="lazy"><figcaption><strong>Add collection</strong> — pick a rule; the delete-by date follows, live.</figcaption></figure>
+        <figure class="shot"><img src="assets/img/desktop/15_mark_deleted.png" alt="Mark as deleted dialog with a confirmation tick box" width="735" height="362" loading="lazy"><figcaption><strong>Mark as deleted</strong> — will not save until the box is ticked; then the record locks.</figcaption></figure>
+        <figure class="shot wide"><img src="assets/img/desktop/16_overdue_report.png" alt="Overdue deletion report: 3 collections overdue, holding personal data of 399 people" width="1180" height="510" loading="lazy"><figcaption><strong>Overdue report</strong> — 399 people's data is past its due date, most overdue first.</figcaption></figure>
+      </div>
+      <div class="cta-row rv"><a class="btn primary big" href="app.html">Try all of it in the live demo <span aria-hidden="true">→</span></a><span class="small muted">Log in as <span class="mono">coding_lead</span> / <span class="mono">Coding@2026</span> or <span class="mono">admin</span> / <span class="mono">Admin@2026</span> — the published demo logins.</span></div>
+    </div>
+  </section>
+
+  <!-- architecture + database -->
+  <section class="sec sage">
+    <div class="wrap">
+      <p class="eyebrow">Architecture</p>
+      <h2 class="h2 tick">Four layers, each talking only to the one below.</h2>
+      <div class="layers rv">
+        <div><span class="mono">ui</span><strong>Screens</strong><span>Swing: login, home, forms, tables, report</span></div>
+        <div><span class="mono">model, policy</span><strong>Rules and objects</strong><span>User, Admin, Coordinator, DataCollection, RetentionPolicy</span></div>
+        <div><span class="mono">db</span><strong>Data access</strong><span>Dao&lt;T&gt; classes over JDBC, one shared connection, transactions</span></div>
+        <div><span class="mono">schema.sql</span><strong>MySQL</strong><span>7 tables, 5 CHECK constraints, foreign keys, 4 triggers</span></div>
+      </div>
+      <div class="er rv">
+        <figure class="glass er-fig"><img src="assets/img/er.png" alt="Entity relationship diagram of the seven tables: club, app_user, event, data_category, data_collection, collection_category and deletion_log" width="1800" height="966" loading="lazy"><figcaption class="mono">Entity relationship diagram</figcaption></figure>
+        <div class="er-notes">
+          <div><strong>Many-to-many</strong><span>Collections ↔ kinds of data, through <span class="mono">collection_category</span>.</span></div>
+          <div><strong>Third normal form</strong><span>A collection stores <span class="mono">event_id</span>, never the club name.</span></div>
+          <div><strong>Status from today</strong><span>“Overdue” is calculated, never stored.</span></div>
+        </div>
+      </div>
+      <h3 class="h3">The database enforces the rules too</h3>
+      <div class="glass table-card rv"><div class="grid-scroll"><table class="t">
+        <thead><tr><th>Rule</th><th>Enforced by</th></tr></thead>
+        <tbody>
+          <tr><td>A deleted collection cannot be edited or removed</td><td>2 BEFORE triggers</td></tr>
+          <tr><td>The deletion log can never change</td><td>2 BEFORE triggers</td></tr>
+          <tr><td>Kept at most 365 days, never before collection</td><td>CHECK constraints</td></tr>
+          <tr><td>Admin has no club; coordinator has one</td><td>CHECK constraint</td></tr>
+          <tr><td>A club or event in use cannot be removed</td><td>ON DELETE RESTRICT</td></tr>
+          <tr><td>One deletion record per collection</td><td>UNIQUE key</td></tr>
+        </tbody></table></div></div>
+      <div class="term-card rv">
+        <pre class="term"><span class="p">mysql&gt;</span> UPDATE deletion_log SET deleted_on = '2026-01-01';
+<span class="e">ERROR 1644 (45000): Deletion records cannot be edited.</span></pre>
+        <p class="small">Run it yourself: log in as admin in the live demo and open the database console.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OOP -->
+  <section class="sec">
+    <div class="wrap">
+      <p class="eyebrow">Object-oriented design</p>
+      <h2 class="h2 tick">Each OOP concept does a real job.</h2>
+      <div class="oop rv">
+        <div class="glass o"><span class="mono">abstract class User</span><strong>Abstraction</strong><p>Screens never check the user type. They ask <span class="mono">canAccessClub()</span>.</p></div>
+        <div class="glass o"><span class="mono">Admin, Coordinator</span><strong>Inheritance</strong><p>Shared parts written once; Coordinator adds its club.</p></div>
+        <div class="glass o"><span class="mono">canAccessClub(), deleteBy()</span><strong>Polymorphism</strong><p>Same call, different behaviour — decided at run time.</p></div>
+        <div class="glass o"><span class="mono">RetentionPolicy × 3</span><strong>Interface</strong><p>Add a policy, change nothing else.</p></div>
+        <div class="glass o"><span class="mono">DataCollection.deleteBy</span><strong>Encapsulation</strong><p>No setter: only a policy can set it.</p></div>
+        <div class="glass o"><span class="mono">Dao&lt;T&gt;</span><strong>Generics</strong><p>The same five CRUD methods for every table.</p></div>
+        <div class="glass o"><span class="mono">DBConnection</span><strong>Singleton</strong><p>One shared connection; credentials read once from db.properties.</p></div>
+        <div class="glass o"><span class="mono">ValidationException · 5 enums</span><strong>And more</strong><p>A custom exception, factory methods <span class="mono">User.create()</span> and <span class="mono">RetentionPolicy.of()</span>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- security -->
+  <section class="sec sage" id="security">
+    <div class="wrap">
+      <p class="eyebrow">Security</p>
+      <h2 class="h2 tick">Six gaps common in mini projects, closed.</h2>
+      <div class="glass table-card rv"><div class="grid-scroll"><table class="t">
+        <thead><tr><th>Gap</th><th>Common practice</th><th>Thavanai</th></tr></thead>
+        <tbody>
+          <tr><td>SQL injection</td><td>SQL built from strings</td><td>PreparedStatement for every query</td></tr>
+          <tr><td>Passwords</td><td>Stored as plain text</td><td>Salted PBKDF2, 600,000 iterations</td></tr>
+          <tr><td>Admin account</td><td>A default password</td><td>Set on first run, no default</td></tr>
+          <tr><td>Guessing</td><td>Unlimited attempts</td><td>30-second lock after 5 failures</td></tr>
+          <tr><td>DB password</td><td>Written in the code</td><td>db.properties, kept out of Git</td></tr>
+          <tr><td>Access</td><td>Everyone sees everything</td><td>Each club sees only its own data</td></tr>
+        </tbody></table></div></div>
+      <h3 class="h3">What the web version keeps — and adds</h3>
+      <ul class="adds rv">
+        <li><strong>Same hashing.</strong> PBKDF2-HMAC-SHA256, 600,000 iterations, 16-byte salt, constant-time compare — through the browser's Web Crypto.</li>
+        <li><strong>Same database rules.</strong> Seven tables, five CHECKs, foreign keys and four triggers, enforced by an SQLite engine in the page.</li>
+        <li><strong>Bound values only.</strong> Every query is a prepared statement. <span class="mono">' OR '1'='1</span> is just a wrong username.</li>
+        <li><strong>Nothing leaves the tab.</strong> No server, no analytics, no cookies. A strict Content Security Policy allows no outside scripts.</li>
+        <li><strong>Stricter guard.</strong> Phone numbers in groups, full 13-digit register numbers and PAN-style IDs are refused too.</li>
+        <li><strong>Checks on every write.</strong> Club changes are refused for non-admins in the data layer, not only hidden on screen.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- tests -->
+  <section class="sec dark" id="tests">
+    <div class="wrap">
+      <p class="eyebrow light">Testing</p>
+      <h2 class="h2 light tick">We tried to break it 61 ways.</h2>
+      <div class="tests rv">
+        <pre class="term big-term"><span class="p">$</span> java thavanai.test.SelfTest
+<span class="ok">PASS</span> SQL injection in username is refused
+<span class="ok">PASS</span> coordinator cannot open another club's record
+<span class="ok">PASS</span> more than 365 days retention is rejected
+<span class="ok">PASS</span> phone number typed into purpose is rejected
+<span class="ok">PASS</span> leap year: 1 Feb 2028 + 30 = 2 Mar 2028
+<span class="ok">PASS</span> trigger blocks editing the deletion log
+…
+RESULT: 61 passed, 0 failed</pre>
+        <ul class="tally">
+          <li><b>13</b> login and passwords</li><li><b>11</b> input rules</li><li><b>10</b> proof of deletion</li><li><b>7</b> database constraints</li>
+          <li><b>6</b> retention policies</li><li><b>5</b> club scoping</li><li><b>5</b> reports and search</li><li><b>4</b> create, update, delete</li>
+        </ul>
+      </div>
+      <div class="cta-row rv"><a class="btn primary big" href="tests.html">Run all 61 in your browser <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <!-- learned / next -->
+  <section class="sec">
+    <div class="wrap two-col">
+      <div class="rv"><p class="eyebrow green">Learned</p><ul class="clean"><li>Design classes around real rules, not screens.</li><li>Make the database enforce what matters.</li><li>Test how a system can be misused, not just whether it works.</li></ul></div>
+      <div class="rv"><p class="eyebrow amber">Next</p><ul class="clean"><li>Email reminders before the due date.</li><li>Check through Google Drive that the data is gone.</li><li>Semester dates from the college calendar.</li><li>A web version for coordinators on phones — this demo is the first step.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- team -->
+  <section class="sec sage" id="team">
+    <div class="wrap">
+      <p class="eyebrow">Team</p>
+      <h2 class="h2 tick">Three of us, every part understood by all three.</h2>
+      <div class="team rv">
+        <div class="glass person"><span class="initial">S</span><strong>Shyam Sathiskumar</strong><span>Problem, law, solution and the design rule</span></div>
+        <div class="glass person"><span class="initial">K</span><strong>Krithika Sree V R</strong><span>Screens and the database</span></div>
+        <div class="glass person"><span class="initial">S</span><strong>Skandesh Saran S G</strong><span>OOP, security and tests</span></div>
+      </div>
+      <p class="small muted">Computer Science and Engineering, Rajalakshmi Engineering College, Chennai. Integrated OOP (Java) and DBMS project, November 2026.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="end">
+  <div class="wrap end-in">
+    <p class="ta end-ta">நன்றி</p>
+    <p class="end-h">Record what you collect. Delete it on time. Keep the proof.</p>
+    <div class="end-row">
+      <a class="btn primary" href="app.html">Open the live demo</a>
+      <a class="btn" href="tests.html">Run the 61 checks</a>
+    </div>
+    <p class="small muted end-note">Java 17 · Swing · JDBC · MySQL 8. The live demo uses SQLite (sql.js, MIT) in the browser. Fonts: Archivo, IBM Plex and Noto Sans Tamil under the SIL Open Font Licence — see <a href="licenses/">licences</a>. Demo data is fictional. Thavanai is a record-keeping aid and does not certify legal compliance.</p>
+  </div>
+</footer>
+
+<script src="assets/js/engine.js" integrity="sha384-3D8dNo9qQnMVmAZ3kLku4UPejki+bTEUv4+iHDWS5wwF9+rpNoP//E39a4algmXG"></script>
+<script src="assets/js/site.js" integrity="sha384-fItStufsasPRZH1zFFzCdhBZumuwYhHo+tBJNO1d48spcjtXTamlww18qX8bdnQz"></script>
+</body>
+</html>
